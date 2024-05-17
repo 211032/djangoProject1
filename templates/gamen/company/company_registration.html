@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仕入れ先登録機能</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        #container {
+            margin: 20px auto;
+            width: 400px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .form-group label {
+            flex: 0 0 180px;
+        }
+        .form-group input, .form-group select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            width: 190px;
+            padding: 10px 0;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <h1>仕入れ先登録機能</h1>
+    <form id="supplier_registration_form" action="#" method="post">
+        <div class="form-group">
+            <label for="supplier_id">仕入れ先 ID：</label>
+            <input type="text" id="supplier_id" name="supplier_id" required>
+        </div>
+        <div class="form-group">
+            <label for="supplier_name">仕入れ先名：</label>
+            <input type="text" id="supplier_name" name="supplier_name" required>
+        </div>
+        <div class="form-group">
+            <label for="supplier_address">仕入れ先住所：</label>
+            <input type="text" id="supplier_address" name="supplier_address" required>
+        </div>
+        <div class="form-group">
+            <label for="supplier_phone">仕入れ先電話番号：</label>
+            <input type="text" id="supplier_phone" name="supplier_phone" required>
+        </div>
+        <div class="form-group">
+            <label for="capital">資本金：</label>
+            <input type="text" id="capital" name="capital" required>
+        </div>
+        <div class="form-group">
+            <label for="delivery_time">納期：</label>
+            <input type="text" id="delivery_time" name="delivery_time" required>
+        </div>
+        <div class="form-group">
+            <button type="button" onclick="registerSupplier()">登録確認</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function registerSupplier() {
+        var supplierId = document.getElementById("supplier_id").value;
+        var supplierName = document.getElementById("supplier_name").value;
+        var supplierAddress = document.getElementById("supplier_address").value;
+        var supplierPhone = document.getElementById("supplier_phone").value;
+        var capital = document.getElementById("capital").value;
+        var deliveryTime = document.getElementById("delivery_time").value;
+
+        // エラーチェックを行う（省略）
+
+        // 登録確認画面に遷移するか、エラーがあればエラーメッセージを表示する（省略）
+    }
+</script>
+</body>
+</html>

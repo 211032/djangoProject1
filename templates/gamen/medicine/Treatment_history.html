@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>処置履歴確認機能</title>
+</head>
+<body>
+<h1>処置履歴確認機能</h1>
+<form id="patientForm">
+    <label for="patientID">患者ID:</label>
+    <input type="text" id="patientID" name="patientID" required>
+    <button type="submit">処置履歴を確認する</button>
+</form>
+<div id="historyResults"></div>
+
+<script>
+    document.getElementById("patientForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // フォームのデフォルトの送信動作をキャンセル
+
+        // 患者IDを取得
+        var patientID = document.getElementById("patientID").value;
+
+        // ここでサーバーに対して処置履歴の取得リクエストを送信すると仮定
+        // 仮のデータを表示する
+        var historyData = [
+            { date: "2024-05-10", treatment: "内科検査" },
+            { date: "2024-05-05", treatment: "血液検査" }
+            // 他の処置履歴データも追加可能
+        ];
+
+        // 結果を表示する要素を取得
+        var historyResults = document.getElementById("historyResults");
+
+        // 処置履歴がある場合は表示し、ない場合はメッセージを表示
+        if (historyData.length > 0) {
+            // 処置履歴を表示
+            var historyHTML = "<h2>処置履歴:</h2><ul>";
+            historyData.forEach(function(entry) {
+                historyHTML += "<li>" + entry.date + ": " + entry.treatment + "</li>";
+            });
+            historyHTML += "</ul>";
+            historyResults.innerHTML = historyHTML;
+        } else {
+            // 処置履歴がない場合のメッセージを表示
+            historyResults.innerHTML = "<p>該当患者の過去の処置履歴はありません。</p>";
+        }
+    });
+</script>
+</body>
+</html>

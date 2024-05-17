@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>処置確定</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* 上詰めに設定 */
+            height: 100vh;
+            background-color: #f2f2f2; /* 背景色を設定 */
+        }
+
+        #container {
+            text-align: center;
+            padding: 20px;
+            background-color: white; /* 白い背景色 */
+            border-radius: 10px; /* 枠の角を丸くする */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 影の追加 */
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            margin: 0 auto; /* 中央ぞろえ */
+            border-collapse: collapse;
+            width: 80%; /* 幅指定 */
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ccc; /* 枠線 */
+            text-align: center; /* 中央ぞろえ */
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>処置を確定しますか？</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>薬剤名</th>
+            <th>患者ID</th>
+            <th>数量</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 表の中身は空 -->
+        </tbody>
+    </table>
+    <!-- 追加終了 -->
+
+    <button onclick="confirmTreatment()">処置確定</button>
+    <button onclick="goBack()">薬剤選択画面へ戻る</button>
+</div>
+
+<script>
+    function confirmTreatment() {
+        // 処置を確定する処理を実行
+        alert("処置が確定されました。");
+        // ここに処置情報を登録する処理を追加
+    }
+
+    function goBack() {
+        // 薬剤選択画面に戻る処理を実行
+        alert("薬剤選択画面に戻ります。");
+        // ここに遷移先のURLを指定する処理を追加
+    }
+</script>
+
+</body>
+</html>

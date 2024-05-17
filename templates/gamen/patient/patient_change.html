@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>患者検索</title>
+    <style>
+        /* スタイルの追加 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        #container {
+            margin: 20px auto;
+            width: 400px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box; /* 追加：パディングも幅に含める */
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            /* width: 120px; */
+            text-align: left;
+            margin-right: 10px; /* 追加：ラベルと入力欄の間隔 */
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="tel"],
+        input[type="email"] {
+            width: calc(100% - 30px); /* ボタンの幅(20pxのパディング×2 + 1pxのボーダー)を除いた値に設定 */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%; /* 変更：ボタンの幅を100%に */
+            padding: 10px 0; /* 変更：上下のパディングを0に */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <h1>患者検索</h1>
+    <form action="#" method="post">
+        <div class="form-group">
+            <label for="patient_id">患者ID：</label>
+            <input type="text" id="patient_id" name="patient_id" required>
+        </div>
+        <div class="form-group">
+            <label for="last_name">患者姓：</label>
+            <input type="text" id="last_name" name="last_name" required>
+        </div>
+        <div class="form-group">
+            <label for="first_name">患者名：</label>
+            <input type="text" id="first_name" name="first_name" required>
+        </div>
+        <div class="form-group">
+            <label for="insurance_number">保険証記号番号：</label>
+            <input type="text" id="insurance_number" name="insurance_number" required>
+        </div>
+        <button type="submit">検索</button>
+    </form>
+</div>
+</body>
+</html>

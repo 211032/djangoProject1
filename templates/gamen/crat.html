@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* 上詰めに設定 */
+            height: 100vh;
+            background-color: #f2f2f2; /* 背景色を設定 */
+        }
+
+        #container {
+            text-align: center;
+            padding: 20px;
+            background-color: white; /* 白い背景色 */
+            border-radius: 10px; /* 枠の角を丸くする */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 影の追加 */
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h2>商品リスト</h2>
+    <ul id="product-list">
+        <li>商品1 - 価格: ¥100 <button onclick="addToCart('商品1', 100)">カートに追加</button></li>
+        <li>商品2 - 価格: ¥200 <button onclick="addToCart('商品2', 200)">カートに追加</button></li>
+        <li>商品3 - 価格: ¥300 <button onclick="addToCart('商品3', 300)">カートに追加</button></li>
+    </ul>
+
+    <h2>カート</h2>
+    <ul id="cart">
+        <!-- ここにカートのアイテムが追加されます -->
+    </ul>
+</div>
+
+<script>
+    let cartItems = [];
+
+    function addToCart(productName, price) {
+        cartItems.push({ name: productName, price: price });
+        renderCart();
+    }
+
+    function renderCart() {
+        const cartElement = document.getElementById("cart");
+        cartElement.innerHTML = ""; // カートをリセット
+
+        cartItems.forEach(item => {
+            const li = document.createElement("li");
+            li.textContent = `${item.name} - 価格: ¥${item.price}`;
+            cartElement.appendChild(li);
+        });
+    }
+</script>
+
+</body>
+</html>

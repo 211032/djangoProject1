@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>従業員登録</title>
+    <style>
+        /* スタイルの追加 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        #container {
+            margin: 20px auto;
+            width: 400px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box; /* 追加：パディングも幅に含める */
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            /* width: 120px; */
+            text-align: left;
+            margin-right: 10px; /* 追加：ラベルと入力欄の間隔 */
+        }
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: calc(100% - 30px); /* ボタンの幅(20pxのパディング×2 + 1pxのボーダー)を除いた値に設定 */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%; /* 変更：ボタンの幅を100%に */
+            padding: 10px 0; /* 変更：上下のパディングを0に */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        // パスワード一致チェック
+        function checkPasswordMatch() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirm_password").value;
+            var passwordMatchText = document.getElementById("password_match");
+
+            if (password !== confirmPassword) {
+                passwordMatchText.textContent = "パスワードが一致しません";
+            } else {
+                passwordMatchText.textContent = "";
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>従業員登録</h1>
+    <form method="post" action="{% url 'employee_registration' %}">
+        {% csrf_token %}
+        <label for="empid">ユーザーID:</label>
+        <input type="text" id="empid" name="empid" required><br>
+
+        <label for="first_name">姓:</label>
+        <input type="text" id="first_name" name="first_name" required><br>
+
+        <label for="last_name">名:</label>
+        <input type="text" id="last_name" name="last_name" required><br>
+
+        <label for="password">パスワード:</label>
+        <input type="password" id="password" name="password" required><br>
+
+        <label for="confirm_password">パスワード確認:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required><br>
+
+        <label for="emprole">ロール:</label>
+        <select id="emprole" name="emprole">
+            <option value="0">管理者</option>
+            <option value="1">受付</option>
+            <option value="2">医師</option>
+        </select><br>
+
+        <button type="submit">登録</button>
+    </form>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+</body>
+</html>

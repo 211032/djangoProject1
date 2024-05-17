@@ -7,3 +7,4 @@ class Employee(models.Model):
     emplname = models.CharField(max_length=64)
     emppasswd = models.CharField(max_length=256)
     emprole = models.IntegerField()
+
