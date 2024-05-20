@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
-from medical_care_system.models import Employee
+from medical_care_system.models import Employee, shiiregyousha
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -28,6 +28,8 @@ def login(request, error_meessage=None):
 
 def home(request):
     return render(request,'gamen/employee/employee_home.html')
+def shiire_home(request):
+    return render(request,'gamen/shiiregyousha/shiire_home.html')
 
 def employee_registration(request):
     # 従業員登録ページにリダイレクト
@@ -131,3 +133,58 @@ def change_password(request):
         return render(request, 'gamen/employee/change_password_admin.html')
     else:
         return render(request, 'gamen/employee/change_password.html')
+
+def shiire_registration(request):
+    if request.method == 'POST':
+        shiireid = request.POST.get('shiireid')
+        shiiremei = request.POST.get('shiiremei')
+        shiireaddress = request.POST.get('shiireaddress')
+        shiiretel = request.POST.get('shiiretel')
+        shiirehonkin = request.POST.get('shiirehonkin')
+        nouki = request.POST.get('nouki')
+
+        # エラーチェックを行う
+        errors = []
+
+        if not shiireid:
+            errors.append('仕入れ先 ID を入力してください。')
+        if not shiiremei:
+            errors.append('仕入れ先名 を入力してください。')
+        if not shiireaddress:
+            errors.append('仕入れ先住所 を入力してください。')
+        if not shiiretel:
+            errors.append('仕入れ先電話番号 を入力してください。')
+        if not shiirehonkin:
+            errors.append('資本金 を入力してください。')
+        if not nouki:
+            errors.append('納期 を入力してください。')
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
+
+        if shiiregyousha.objects.filter(shiireid=shiireid).exists():
+            messages.error(request, "この仕入れ先 ID は既に存在しています。")
+            return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
+
+        # Shiiregyousha オブジェクトを作成
+        shiiregyousha.objects.create(
+            shiireid=shiireid,
+            shiiremei=shiiremei,
+            shiireaddress=shiireaddress,
+            shiiretel=shiiretel,
+            shiirehonkin=shiirehonkin,
+            nouki=nouki
+        )
+        messages.success(request, '仕入れ先が正常に登録されました。')
+        return redirect('shiire_registration')
+
+    return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
+
+def shiire_list(request, shiiregyousha=None):
+
+    shiiregyousha = shiiregyousha.objects.all()
+    for shiiregyousha in shiiregyousha:  # 変数名を複数形に変更し、ループ内で個々の仕入れ先を取り出すよう修正
+        print(f"仕入れ先ID:{shiiregyousha.shiireid}, 仕入れ先名:{shiiregyousha.shiiremei}, 住所:{shiiregyousha.shiireaddress}, 電話番号:{shiiregyousha.shiiretel}, 資本金:{shiiregyousha.shiirehonkin}, 納期:{shiiregyousha.nouki}")
+    return render(request, 'gamen/shiiregyousha/shiire_list.html', {'shiiregyousha': shiiregyousha})

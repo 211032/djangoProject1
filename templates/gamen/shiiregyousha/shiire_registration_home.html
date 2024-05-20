@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仕入れ先登録</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        #container {
+            margin: 20px auto;
+            width: 400px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: calc(100% - 16px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px 0;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <h1>仕入れ先登録</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="shiireid">仕入れ先 ID:</label>
+            <input type="text" id="shiireid" name="shiireid" required>
+        </div>
+        <div class="form-group">
+            <label for="shiiremei">仕入れ先名:</label>
+            <input type="text" id="shiiremei" name="shiiremei" required>
+        </div>
+        <div class="form-group">
+            <label for="shiireaddress">仕入れ先住所:</label>
+            <input type="text" id="shiireaddress" name="shiireaddress" required>
+        </div>
+        <div class="form-group">
+            <label for="shiiretel">仕入れ先電話番号:</label>
+            <input type="text" id="shiiretel" name="shiiretel" required>
+        </div>
+        <div class="form-group">
+            <label for="shiirehonkin">資本金:</label>
+            <input type="text" id="shiirehonkin" name="shiirehonkin" required>
+        </div>
+        <div class="form-group">
+            <label for="nouki">納期:</label>
+            <input type="text" id="nouki" name="nouki" required>
+        </div>
+        <div class="form-group">
+            <button type="submit">登録確認</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

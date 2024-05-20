@@ -44,7 +44,7 @@
 
 <div id="home" class="big-bg">
     <header class="page-header wrapper">
-        <h1><a href="home.html"></a><img class="logo" src="画面設計/images/home.png" alt="ホーム画面"></h1>
+        <h1><a href="shiire_home.html"></a><img class="logo" src="画面設計/images/home.png" alt="ホーム画面"></h1>
     </header>
 </div>
 
@@ -52,16 +52,16 @@
     <div class="menu-row">
         <a href="{% url 'login' %}" class="menu-button">管理者ログアウト</a>
         {% csrf_token %}
-        <a href="{% url 'home' %}" class="menu-button">従業員機能</a>
+        <a href="{% url 'shiire_registration' %}" class="menu-button">仕入れ先登録</a>
         {% csrf_token %}
-        <a href="{% url 'shiire_home' %}" class="menu-button">仕入れ先TBL</a>
+        <a href="{% url 'shiire_list' %}" class="menu-button">仕入れ先一覧表示</a>
         {% csrf_token %}
 
     </div>
     <div class="menu-row">
-        <a href="#" class="menu-button">レコード追加</a>
-        <a href="#" class="menu-button">住所検索</a>
-        <a href="#" class="menu-button">パスワード変更</a>
+        <a href="#" class="menu-button">住所→仕入れ先検索</a>
+        <a href="#" class="menu-button">資本金→仕入れ先検索</a>
+        <a href="#" class="menu-button">仕入れ先情報変更</a>
     </div>
 </div>
 

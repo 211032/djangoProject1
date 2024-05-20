@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>仕入れ先一覧</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>仕入れ先ID</th>
+            <th>仕入れ先名</th>
+            <th>住所</th>
+            <th>電話番号</th>
+            <th>資本金</th>
+            <th>納期</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for shiiregyousha in shiiregyousha %}
+            <tr>
+                <td>{{ shiiregyousha.shiireid }}</td>
+                <td>{{ shiiregyousha.shiiremei }}</td>
+                <td>{{ shiiregyousha.shiireaddress }}</td>
+                <td>{{ shiiregyousha.shiiretel }}</td>
+                <td>{{ shiiregyousha.shiirehonkin }}</td>
+                <td>{{ shiiregyousha.nouki }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
