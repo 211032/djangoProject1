@@ -8,3 +8,10 @@ class Employee(models.Model):
     emppasswd = models.CharField(max_length=256)
     emprole = models.IntegerField()
 
+class shiiregyousha(models.Model):
+    shiireid = models.CharField(max_length=8, primary_key=True)
+    shiiremei = models.CharField(max_length=64)
+    shiireaddress = models.CharField(max_length=64)
+    shiiretel = models.CharField(max_length=13)
+    shiirehonkin = models.IntegerField()
+    nouki = models.IntegerField()

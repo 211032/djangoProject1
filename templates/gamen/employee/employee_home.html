@@ -52,13 +52,15 @@
     <div class="menu-row">
         <a href="{% url 'login' %}" class="menu-button">管理者ログアウト</a>
         {% csrf_token %}
-        <a href="{% url 'employee_registration' %}" class="menu-button">従業員機能</a>
+        <a href="{% url 'employee_registration' %}" class="menu-button">従業員登録</a>
         {% csrf_token %}
-        <a href="#" class="menu-button">従業員更新</a>
+        <a href="{% url 'employee_update' %}" class="menu-button">従業員更新</a>
+        {% csrf_token %}
 
     </div>
     <div class="menu-row">
-        <a href="#" class="menu-button">従業員パスワード変更</a>
+        <a href="{% url 'change_password' %}" class="menu-button">従業員パスワード変更</a>
+        {% csrf_token %}
     </div>
 </div>
 
