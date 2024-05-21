@@ -182,9 +182,12 @@ def shiire_registration(request):
 
     return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
 
-def shiire_list(request, shiiregyousha=None):
+def shiire_list(request):
+    shiiregyousha_list = shiiregyousha.objects.all()
+    return render(request, 'gamen/shiiregyousha/shiire_list.html', {'shiiregyousha_list': shiiregyousha_list})
 
-    shiiregyousha = shiiregyousha.objects.all()
-    for shiiregyousha in shiiregyousha:  # 変数名を複数形に変更し、ループ内で個々の仕入れ先を取り出すよう修正
-        print(f"仕入れ先ID:{shiiregyousha.shiireid}, 仕入れ先名:{shiiregyousha.shiiremei}, 住所:{shiiregyousha.shiireaddress}, 電話番号:{shiiregyousha.shiiretel}, 資本金:{shiiregyousha.shiirehonkin}, 納期:{shiiregyousha.nouki}")
-    return render(request, 'gamen/shiiregyousha/shiire_list.html', {'shiiregyousha': shiiregyousha})
+
+
+
+
+

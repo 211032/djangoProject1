@@ -1,10 +1,66 @@
-{% extends 'base.html' %}
-{% block content %}
-    <h2>仕入れ先一覧</h2>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仕入れ先一覧</title>
+    <link href="gamen/style.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        main {
+            margin: 20px auto;
+            width: 80%;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>仕入れ先一覧</h1>
+</header>
+<main>
     <table>
         <thead>
         <tr>
-            <th>仕入れ先ID</th>
+            <th>仕入れ先 ID</th>
             <th>仕入れ先名</th>
             <th>住所</th>
             <th>電話番号</th>
@@ -13,16 +69,21 @@
         </tr>
         </thead>
         <tbody>
-        {% for shiiregyousha in shiiregyousha %}
+        {% for shiire in shiiregyousha_list %}
             <tr>
-                <td>{{ shiiregyousha.shiireid }}</td>
-                <td>{{ shiiregyousha.shiiremei }}</td>
-                <td>{{ shiiregyousha.shiireaddress }}</td>
-                <td>{{ shiiregyousha.shiiretel }}</td>
-                <td>{{ shiiregyousha.shiirehonkin }}</td>
-                <td>{{ shiiregyousha.nouki }}</td>
+                <td>{{ shiire.shiireid }}</td>
+                <td>{{ shiire.shiiremei }}</td>
+                <td>{{ shiire.shiireaddress }}</td>
+                <td>{{ shiire.shiiretel }}</td>
+                <td>{{ shiire.shiirehonkin }}</td>
+                <td>{{ shiire.nouki }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-{% endblock %}
+</main>
+<footer>
+    <p>&copy; 2024 Your Company</p>
+</footer>
+</body>
+</html>
