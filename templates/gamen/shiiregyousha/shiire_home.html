@@ -59,9 +59,11 @@
 
     </div>
     <div class="menu-row">
-        <a href="#" class="menu-button">住所→仕入れ先検索</a>
-        <a href="#" class="menu-button">資本金→仕入れ先検索</a>
-        <a href="#" class="menu-button">仕入れ先情報変更</a>
+        <a href="{% url 'shiire_search' %}" class="menu-button">住所→仕入れ先検索</a>
+        {% csrf_token %}
+        <a href="{% url 'change_password' %}" class="menu-button">管理者パスワード変更</a>
+        {% csrf_token %}
+        
     </div>
 </div>
 

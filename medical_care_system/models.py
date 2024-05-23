@@ -15,3 +15,11 @@ class shiiregyousha(models.Model):
     shiiretel = models.CharField(max_length=13)
     shiirehonkin = models.IntegerField()
     nouki = models.IntegerField()
+
+class patient(models.Model):
+    patid = models.CharField(max_length=8, primary_key=True)
+    patfname = models.CharField(max_length=64)
+    patlname = models.CharField(max_length=64)
+    hokenmei = models.CharField(max_length=64)
+    hokenexp = models.DateField()
+

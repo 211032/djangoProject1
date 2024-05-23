@@ -52,16 +52,10 @@
     <div class="menu-row">
         <a href="{% url 'login' %}" class="menu-button">管理者ログアウト</a>
         {% csrf_token %}
-        <a href="{% url 'home' %}" class="menu-button">従業員機能</a>
+        <a href="{% url 'employee_registration' %}" class="menu-button">従業員登録</a>
         {% csrf_token %}
         <a href="{% url 'shiire_home' %}" class="menu-button">仕入れ先TBL</a>
         {% csrf_token %}
-
-    </div>
-    <div class="menu-row">
-        <a href="#" class="menu-button">レコード追加</a>
-        <a href="#" class="menu-button">住所検索</a>
-        <a href="#" class="menu-button">パスワード変更</a>
     </div>
 </div>
 

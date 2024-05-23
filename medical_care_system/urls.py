@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import login, employee_registration, home, employee_update_form, employee_update, change_password, \
-    shiire_home, shiire_registration, shiire_list
+    shiire_home, shiire_registration, shiire_list, shiire_search,patient_registration
 
 urlpatterns = [
     path('', login, name='index'),
@@ -12,8 +12,9 @@ urlpatterns = [
     path('change_password/', change_password, name='change_password'),
     path('shiire_home/', shiire_home, name='shiire_home'),
     path('shiire_registration/', shiire_registration, name='shiire_registration'),
-    path('shiire_list/', shiire_list, name='shiire_list')
-
+    path('shiire_list/', shiire_list, name='shiire_list'),
+    path('shiire_search/', shiire_search, name='shiire_search'),
+    path('patient_registration/', patient_registration, name='patient_registration'),
 
 
 ]
