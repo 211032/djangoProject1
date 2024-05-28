@@ -241,6 +241,114 @@ def patient_registration(request):
 
     return render(request, 'gamen/patient/patient_registration.html')
 
+# views.py
+
+def patient_insurance_change(request):
+    # ログインユーザーの権限を確認し、受付ロール以外の場合はエラーを表示してリダイレクトする
+    empid = request.session.get('empid')
+    current_user = get_object_or_404(Employee, empid=empid)
+    if current_user.emprole != 1:
+        messages.error(request, "この機能は受付のみが利用できます。")
+        return redirect('home')  # ログイン後の適切な画面にリダイレクトする必要があります
+
+    if request.method == 'POST':
+        patid = request.POST.get('patid')
+        patlname = request.POST.get('patlname')
+        patfname = request.POST.get('patfname')
+        hokenmei = request.POST.get('hokenmei')
+        hokenexp = request.POST.get('hokenexp')
+
+        # 入力値のチェック
+        errors = []
+        if not patid:
+            errors.append('患者IDを入力してください。')
+        if not patlname:
+            errors.append('姓を入力してください。')
+        if not patfname:
+            errors.append('名を入力してください。')
+        if not hokenmei:
+            errors.append('保険証記号番号を入力してください。')
+        if not hokenexp:
+            errors.append('有効期限を入力してください。')
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return render(request, 'gamen/patient/insurance_change.html')
+
+        # 患者情報の取得
+        patient_instance = get_object_or_404(patient, patid=patid, patlname=patlname, patfname=patfname)
+
+        # 保険証記号番号と有効期限を更新
+        patient_instance.hokenmei = hokenmei
+        patient_instance.hokenexp = hokenexp
+        patient_instance.save()
+
+        messages.success(request, '保険証情報が正常に変更されました。')
+        return redirect('insurance_change_confirmation')
+
+    return render(request, 'gamen/patient/insurance_change.html')
+
+def insurance_change(request):
+    if request.method == 'POST':
+        patid = request.POST.get('patid')
+        patlname = request.POST.get('patlname')
+        patfname = request.POST.get('patfname')
+        hokenmei = request.POST.get('hokenmei')
+        hokenexp = request.POST.get('hokenexp')
+
+        # 入力値のチェック
+        errors = []
+        if not patid:
+            errors.append('患者IDを入力してください。')
+        if not patlname:
+            errors.append('姓を入力してください。')
+        if not patfname:
+            errors.append('名を入力してください。')
+        if not hokenmei:
+            errors.append('保険証記号番号を入力してください。')
+        if not hokenexp:
+            errors.append('有効期限を入力してください。')
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return render(request, 'gamen/patient/insurance_change.html')
+
+        # 患者情報の取得
+        patient_instance = get_object_or_404(patient, patid=patid, patlname=patlname, patfname=patfname)
+
+        # 保険証記号番号と有効期限を更新
+        patient_instance.hokenmei = hokenmei
+        patient_instance.hokenexp = hokenexp
+        patient_instance.save()
+
+        messages.success(request, '保険証情報が正常に変更されました。')
+        return redirect('insurance_change')
+
+    return render(request, 'gamen/patient/insurance_change.html')
+
+def patient_search(request):
+    if request.method == 'POST':
+        patlname = request.POST.get('patlname').strip()
+        patfname = request.POST.get('patfname').strip()
+
+        # 検索条件を構築
+        search_criteria = {'patlname__icontains': patlname}
+        if patfname:
+            search_criteria['patfname__icontains'] = patfname
+
+        # 検索処理
+        patients = patient.objects.filter(**search_criteria)
+
+        # 結果の表示
+        if patients:
+            return render(request, 'gamen/patient/patient_search.html', {'patients': patients})
+        else:
+            messages.info(request, "該当する患者が見つかりませんでした。")
+            return render(request, 'gamen/patient/patient_search.html')
+
+    return render(request, 'gamen/patient/patient_search.html')
 
 
 

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>患者名検索</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        #container {
+            margin: 20px auto;
+            width: 400px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+            text-align: right;
+            margin-right: 10px;
+        }
+        input[type="text"] {
+            width: calc(100% - 150px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px 0;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .result-list li {
+            background-color: #e9e9e9;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <h1>患者名検索</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="patlname">姓:</label>
+            <input type="text" id="patlname" name="patlname" required>
+        </div>
+        <div class="form-group">
+            <label for="patfname">名:</label>
+            <input type="text" id="patfname" name="patfname">
+        </div>
+        <button type="submit">検索</button>
+    </form>
+
+    {% if patients %}
+        <h2>検索結果:</h2>
+        <ul class="result-list">
+            {% for patient in patients %}
+                <li>
+                    <strong>ID:</strong> {{ patient.patid }}<br>
+                    <strong>姓:</strong> {{ patient.patlname }}<br>
+                    <strong>名:</strong> {{ patient.patfname }}<br>
+                    <strong>保険名:</strong> {{ patient.hokenmei }}<br>
+                    <strong>保険有効期限:</strong> {{ patient.hokenexp }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>該当する患者が見つかりませんでした。</p>
+    {% endif %}
+</div>
+</body>
+</html>

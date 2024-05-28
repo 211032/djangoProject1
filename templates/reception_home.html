@@ -56,12 +56,13 @@
         {% csrf_token %}
         <a href="{% url 'patient_registration' %}" class="menu-button">患者登録</a>
         {% csrf_token %}
-        <a href="#" class="menu-button">患者保険証変更</a>
+        <a href="{% url 'insurance_change' %}" class="menu-button">患者保険証変更</a>
+        {% csrf_token %}
 
     </div>
     <div class="menu-row">
-        <a href="#" class="menu-button">患者管理</a>
-        <a href="#" class="menu-button">患者名の検索</a>
+        <a href="{% url 'patient_search' %}" class="menu-button">患者検索</a>
+        {% csrf_token %}
     </div>
 </div>
 

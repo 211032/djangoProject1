@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>患者保険証変更</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="patid">患者ID:</label>
+    <input type="text" id="patid" name="patid" required><br><br>
+    <label for="patlname">姓:</label>
+    <input type="text" id="patlname" name="patlname" required><br><br>
+    <label for="patfname">名:</label>
+    <input type="text" id="patfname" name="patfname" required><br><br>
+    <label for="hokenmei">保険証記号番号:</label>
+    <input type="text" id="hokenmei" name="hokenmei" required><br><br>
+    <label for="hokenexp">有効期限:</label>
+    <input type="date" id="hokenexp" name="hokenexp" required><br><br>
+    <input type="submit" value="変更確認">
+</form>
+</body>
+</html>
