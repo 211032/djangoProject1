@@ -52,14 +52,12 @@
     <div class="menu-row">
         <a href="{% url 'login' %}" class="menu-button">医師ログアウト</a>
         {% csrf_token %}
-        <a href="#" class="menu-button">患者検索</a>
-        <a href="employee/employee.html" class="menu-button">薬投与指示</a>
-
-    </div>
-    <div class="menu-row">
-        <a href="#" class="menu-button">薬投与削除</a>
-        <a href="#" class="menu-button">処置確定</a>
-        <a href="#" class="menu-button">処置履歴</a>
+        <a href="{% url 'patients' %}" class="menu-button">患者検索</a>
+        {% csrf_token %}
+        <a href="#" class="menu-button">薬投与指示</a>
+        {% csrf_token %}
+        <a href="" class="menu-button">処置履歴</a>
+        
     </div>
 </div>
 

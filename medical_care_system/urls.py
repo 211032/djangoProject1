@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import login, employee_registration, home, employee_update_form, employee_update, change_password, \
-    shiire_home, shiire_registration, shiire_list, shiire_search, patient_registration, insurance_change, patient_search
+    shiire_home, shiire_registration, shiire_list, shiire_search, patient_registration, insurance_change, \
+    patient_search, patients
 
 urlpatterns = [
     path('', login, name='index'),
@@ -17,6 +18,7 @@ urlpatterns = [
     path('patient_registration/', patient_registration, name='patient_registration'),
     path('insurance_change/', insurance_change, name='insurance_change'),
     path('patient_search/', patient_search, name='patient_search'),
+    path('patients/', patients, name='patients'),
 
 
 

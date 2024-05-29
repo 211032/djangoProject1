@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>処置履歴確認</title>
+</head>
+<body>
+<h1>処置履歴確認</h1>
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <label for="patient_id">患者ID:</label>
+        <input type="text" id="patient_id" name="patient_id" required>
+    </div>
+    <button type="submit">検索</button>
+</form>
+
+{% if treatments %}
+    <h3>処置履歴</h3>
+    <ul>
+        {% for treatment in treatments %}
+            <li>{{ treatment.date }} - {{ treatment.medicine.medicinename }}: {{ treatment.quantity }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<a href="{% url 'home' %}">ホームに戻る</a>
+</body>
+</html>

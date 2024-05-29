@@ -28,3 +28,9 @@ class medicine(models.Model):
     medicinename = models.CharField(max_length=64)
     unit = models.CharField(max_length=8)
 
+class Treatment(models.Model):
+    treatment_id = models.AutoField(primary_key=True)
+    patid = models.ForeignKey('patient', on_delete=models.CASCADE)
+    medicine_id = models.ForeignKey('medicine', on_delete=models.CASCADE)
+    dosage = models.IntegerField()
+    status = models.CharField(max_length=10, default='pending')  # 'pending' or 'confirmed'

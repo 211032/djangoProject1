@@ -1,8 +1,9 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
-from medical_care_system.models import Employee, shiiregyousha, patient
+from medical_care_system.models import Employee, shiiregyousha, patient, medicine, Treatment
 from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 
@@ -349,6 +350,56 @@ def patient_search(request):
             return render(request, 'gamen/patient/patient_search.html')
 
     return render(request, 'gamen/patient/patient_search.html')
+
+def patients(request):
+    patients = patient.objects.all()
+    return render(request, 'gamen/medicine/patients.html', {'patients': patients})
+
+
+
+
+
+def prescribe_medicine(request, patid):
+    if request.method == 'POST':
+        medicine_id = request.POST.get('medicine_id')
+        dosage = request.POST.get('dosage')
+
+
+        # 新しい処置を作成
+        treatment = Treatment.objects.create(
+            patid=patient,
+            medicine_id=get_object_or_404(medicine, medicineid=medicine_id),
+            dosage=dosage
+        )
+
+        return redirect('confirm_treatment', treatment_id=treatment.treatment_id)
+
+    # 投薬画面を表示
+    medicines = medicine.objects.all()
+    return render(request, 'gamen/doctor/prescribe_medicine.html', {'medicines': medicines, 'patid': patid})
+
+def confirm_treatment(request, treatment_id):
+    treatment = get_object_or_404(Treatment, treatment_id=treatment_id)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'confirm':
+            treatment.status = 'confirmed'
+            treatment.save()
+            messages.success(request, "処置が確定しました。")
+            return redirect('treatment_history', patid=treatment.patid.patid)
+
+        elif action == 'delete':
+            treatment.delete()
+            messages.success(request, "処置が削除されました。")
+            return redirect('prescribe_medicine', patid=treatment.patid.patid)
+
+    return render(request, 'gamen/doctor/confirm_treatment.html', {'treatment': treatment})
+
+def treatment_history(request, patid):
+    treatments = Treatment.objects.filter(patid=patid, status='confirmed')
+    return render(request, 'gamen/doctor/treatment_history.html', {'treatments': treatments})
 
 
 
