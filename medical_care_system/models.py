@@ -30,7 +30,8 @@ class medicine(models.Model):
 
 class Treatment(models.Model):
     treatment_id = models.AutoField(primary_key=True)
+    empid = models.ForeignKey('Employee', on_delete=models.CASCADE)
     patid = models.ForeignKey('patient', on_delete=models.CASCADE)
-    medicine_id = models.ForeignKey('medicine', on_delete=models.CASCADE)
+    medicineid = models.ForeignKey('medicine', on_delete=models.CASCADE)
     dosage = models.IntegerField()
     status = models.CharField(max_length=10, default='pending')  # 'pending' or 'confirmed'
