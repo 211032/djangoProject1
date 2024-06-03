@@ -290,7 +290,8 @@ def patient_insurance_change(request):
 
     return render(request, 'gamen/patient/insurance_change.html')
 
-def insurance_change(request):
+def patient_insurance_change(request):
+
     if request.method == 'POST':
         patid = request.POST.get('patid')
         patlname = request.POST.get('patlname')
@@ -298,7 +299,6 @@ def insurance_change(request):
         hokenmei = request.POST.get('hokenmei')
         hokenexp = request.POST.get('hokenexp')
 
-        # 入力値のチェック
         errors = []
         if not patid:
             errors.append('患者IDを入力してください。')
@@ -306,28 +306,28 @@ def insurance_change(request):
             errors.append('姓を入力してください。')
         if not patfname:
             errors.append('名を入力してください。')
-        if not hokenmei:
-            errors.append('保険証記号番号を入力してください。')
-        if not hokenexp:
-            errors.append('有効期限を入力してください。')
+        if not hokenmei and not hokenexp:
+            errors.append('保険証記号番号または有効期限を入力してください。')
 
         if errors:
             for error in errors:
                 messages.error(request, error)
             return render(request, 'gamen/patient/insurance_change.html')
 
-        # 患者情報の取得
-        patient_instance = get_object_or_404(patient, patid=patid, patlname=patlname, patfname=patfname)
-
-        # 保険証記号番号と有効期限を更新
-        patient_instance.hokenmei = hokenmei
-        patient_instance.hokenexp = hokenexp
+        patient_instance = get_object_or_404(patient, patid=patid)
+        if hokenmei:
+            patient_instance.hokenmei = hokenmei
+        if hokenexp:
+            patient_instance.hokenexp = hokenexp
         patient_instance.save()
 
         messages.success(request, '保険証情報が正常に変更されました。')
-        return redirect('insurance_change')
+        return redirect('patient_insurance_change')
 
     return render(request, 'gamen/patient/insurance_change.html')
+
+
+
 
 def patient_search(request):
     if request.method == 'POST':

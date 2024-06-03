@@ -5,7 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-<h1>患者保険証変更</h1>
+<div>
+    <h1>患者保険証変更</h1>
+    {% if messages %}
+        <div>
+            <p style="color: green;">{{ messages }}</p>
+        </div>
+    {% endif %}
 <form method="post">
     {% csrf_token %}
     <label for="patid">患者ID:</label>
@@ -20,5 +26,6 @@
     <input type="date" id="hokenexp" name="hokenexp" required><br><br>
     <input type="submit" value="変更確認">
 </form>
+</div>
 </body>
 </html>
