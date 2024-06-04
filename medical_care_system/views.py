@@ -32,6 +32,7 @@ def home(request):
 def shiire_home(request):
     return render(request,'gamen/shiiregyousha/shiire_home.html')
 
+
 def employee_registration(request):
     # 従業員登録ページにリダイレクト
     if request.method == 'POST':
@@ -355,6 +356,88 @@ def patients(request):
     patients = patient.objects.all()
     return render(request, 'gamen/medicine/patients.html', {'patients': patients})
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+def doctor_home(request):
+    return render(request, 'docdor_home.html')
+
+
+def prescribe_medicine(request):
+    empid = request.session.get('empid')
+    current_user = get_object_or_404(Employee, empid=empid)
+
+    if request.method == 'POST':
+        patid = request.POST.get('patid')
+        medicineid = request.POST.get('medicineid')
+        dosage = request.POST.get('dosage')
+
+        # 入力チェック
+        if not patid or not medicineid or not dosage:
+            messages.error(request, 'すべてのフィールドを入力してください。')
+            return redirect('prescribe_medicine')
+
+        # 患者と薬剤の存在確認
+        try:
+            patient_instance = get_object_or_404(patient, patid=patid)
+            medicine_instance = get_object_or_404(medicine, medicineid=medicineid)
+        except:
+            messages.error(request, '患者または薬剤が存在しません。')
+            return redirect('prescribe_medicine')
+
+        # 処置データの作成
+        prescription = {
+            'empid': current_user.empid,
+            'patid': patient_instance.patid,
+            'medicineid': medicine_instance.medicineid,
+            'dosage': dosage
+        }
+        # 確定するまでDBには保存しない
+        request.session['prescription'] = prescription
+        return redirect('confirm_prescription')
+
+    medicines = medicine.objects.all()
+    return render(request, 'gamen/Treatment/prescribe_medicine.html', {'medicines': medicines})
+
+
+def confirm_prescription(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'confirm':
+            prescription_data = request.session.get('prescription')
+            if prescription_data:
+                Treatment.objects.create(
+                    empid_id=prescription_data['empid'],
+                    patid_id=prescription_data['patid'],
+                    medicineid_id=prescription_data['medicineid'],
+                    dosage=prescription_data['dosage'],
+                    status='confirmed'
+                )
+                messages.success(request, '処置が確定されました。')
+                return redirect('doctor_home')
+        elif action == 'edit':
+            return redirect('prescribe_medicine')
+        elif action == 'delete':
+            del request.session['prescription']
+            messages.info(request, '処置が削除されました。')
+            return redirect('prescribe_medicine')
+
+    prescription = request.session.get('prescription')
+    if not prescription:
+        messages.error(request, '処置情報がありません。')
+        return redirect('prescribe_medicine')
+
+    return render(request, 'gamen/Treatment/confirm_prescription.html', {'prescription': prescription})
 
 
 

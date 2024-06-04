@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>薬投与指示</title>
+</head>
+<body>
+<h1>薬投与指示</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="patid">患者ID:</label>
+    <input type="text" name="patid" id="patid"><br>
+
+    <label for="medicineid">薬剤名:</label>
+    <select name="medicineid" id="medicineid">
+        {% for med in medicines %}
+            <option value="{{ med.medicineid }}">{{ med.medicinename }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="dosage">投薬量:</label>
+    <input type="number" name="dosage" id="dosage"><br>
+
+    <button type="submit">確認</button>
+</form>
+</body>
+</html>
