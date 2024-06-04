@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import login, employee_registration, home, employee_update_form, employee_update, change_password, \
     shiire_home, shiire_registration, shiire_list, shiire_search, patient_registration, patient_insurance_change, \
-    patient_search, patients, confirm_prescription, prescribe_medicine, doctor_home
+    patient_search, patients, confirm_prescription, prescribe_medicine, doctor_home, prescription_list
 
 urlpatterns = [
     path('', login, name='index'),
@@ -22,6 +22,8 @@ urlpatterns = [
     path('doctor_home/', doctor_home, name='doctor_home'),
     path('prescribe_medicine/', prescribe_medicine, name='prescribe_medicine'),
     path('confirm_prescription/', confirm_prescription, name='confirm_prescription'),
+    path('prescription_list/', prescription_list, name='prescription_list'),
+
 
 
 

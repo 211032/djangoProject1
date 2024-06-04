@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>処方リスト</title>
+</head>
+<body>
+{% block content %}
+    <h2>処方リスト</h2>
+    {% if prescriptions %}
+        <table>
+            <tr>
+                <th>患者名</th>
+                <th>薬剤名</th>
+                <th>投薬量</th>
+                <th>アクション</th>
+            </tr>
+            {% for prescription in prescriptions %}
+                <tr>
+                    <td>{{ prescription.patient_name }}</td>
+                    <td>{{ prescription.medicine_name }}</td>
+                    <td>{{ prescription.dosage }}</td>
+                    <td>
+                        <form method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="index" value="{{ forloop.counter0 }}">
+                            <button type="submit" name="action" value="confirm">処置確定</button>
+                            <button type="submit" name="action" value="delete">削除</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>処方がありません。</p>
+    {% endif %}
+    <a href="{% url 'prescribe_medicine' %}">新しい処方を追加</a>
+{% endblock %}
+</body>
+</html>
