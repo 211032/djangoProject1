@@ -6,15 +6,24 @@
 </head>
 <body>
 <h1>処置確認</h1>
-<p>患者ID: {{ prescription.patid }}</p>
-<p>薬剤ID: {{ prescription.medicineid }}</p>
-<p>投薬量: {{ prescription.dosage }}</p>
+{% if prescriptions %}
+    <ul>
+        {% for prescription in prescriptions %}
+            <li>
+                患者ID: {{ prescription.patid }}<br>
+                薬剤ID: {{ prescription.medicineid }}<br>
+                投薬量: {{ prescription.dosage }}<br>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>処置情報がありません。</p>
+{% endif %}
 
 <form method="post">
     {% csrf_token %}
-    <button type="submit" name="action" value="confirm">処置確定</button>
+    <button type="submit" name="action" value="confirm_all">すべて確定</button>
     <button type="submit" name="action" value="edit">薬剤選択画面へ戻る</button>
-    <button type="submit" name="action" value="delete">削除</button>
 </form>
 </body>
 </html>

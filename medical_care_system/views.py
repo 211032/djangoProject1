@@ -356,24 +356,8 @@ def patients(request):
     patients = patient.objects.all()
     return render(request, 'gamen/medicine/patients.html', {'patients': patients})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 def doctor_home(request):
     return render(request, 'docdor_home.html')
-
-
-
 
 
 
@@ -419,12 +403,13 @@ def prescribe_medicine(request):
     return render(request, 'gamen/Treatment/prescribe_medicine.html', {'medicines': medicines})
 
 
-
 def prescription_list(request):
     if request.method == 'POST':
         action = request.POST.get('action')
         index = int(request.POST.get('index', -1))
-        if action == 'confirm' and index >= 0:
+        if action == 'confirm_all':
+            return redirect('confirm_prescription')
+        elif action == 'confirm' and index >= 0:
             request.session['confirm_prescription'] = request.session['prescriptions'][index]
             request.session['confirm_prescription_index'] = index
             return redirect('confirm_prescription')
@@ -440,44 +425,31 @@ def prescription_list(request):
     return render(request, 'gamen/Treatment/prescription_list.html', {'prescriptions': prescriptions})
 
 
-
 def confirm_prescription(request):
-    prescription = request.session.get('confirm_prescription')
-    prescription_index = request.session.get('confirm_prescription_index')
-    if not prescription:
+    prescriptions = request.session.get('prescriptions', [])
+    if not prescriptions:
         messages.error(request, '処置情報がありません。')
         return redirect('prescribe_medicine')
 
     if request.method == 'POST':
         action = request.POST.get('action')
-        if action == 'confirm':
-            Treatment.objects.create(
-                empid_id=prescription['empid'],
-                patid_id=prescription['patid'],
-                medicineid_id=prescription['medicineid'],
-                dosage=prescription['dosage'],
-                status='confirmed'
-            )
-            messages.success(request, '処置が確定されました。')
-            # 処方リストから削除
-            prescriptions = request.session.get('prescriptions', [])
-            if prescription_index is not None and prescription_index < len(prescriptions):
-                del prescriptions[prescription_index]
-                request.session['prescriptions'] = prescriptions
-            # セッションから確定処方を削除
-            del request.session['confirm_prescription']
-            del request.session['confirm_prescription_index']
+        if action == 'confirm_all':
+            for prescription in prescriptions:
+                Treatment.objects.create(
+                    empid_id=prescription['empid'],
+                    patid_id=prescription['patid'],
+                    medicineid_id=prescription['medicineid'],
+                    dosage=prescription['dosage'],
+                    status='confirmed'
+                )
+            messages.success(request, 'すべての処置が確定されました。')
+            request.session['prescriptions'] = []
+            request.session.modified = True
             return redirect('doctor_home')
         elif action == 'edit':
             return redirect('prescription_list')
-        elif action == 'delete':
-            # セッションから確定処方を削除
-            del request.session['confirm_prescription']
-            del request.session['confirm_prescription_index']
-            messages.info(request, '処置が削除されました。')
-            return redirect('prescription_list')
 
-    return render(request, 'gamen/Treatment/confirm_prescription.html', {'prescription': prescription})
+    return render(request, 'gamen/Treatment/confirm_prescription.html', {'prescriptions': prescriptions})
 
 
 
