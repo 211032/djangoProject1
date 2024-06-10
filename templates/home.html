@@ -54,6 +54,8 @@
         {% csrf_token %}
         <a href="{% url 'employee_registration' %}" class="menu-button">従業員登録</a>
         {% csrf_token %}
+        <a href="{% url 'change_password' %}" class="menu-button">管理者パスワード変更</a>
+        {% csrf_token %}
         <a href="{% url 'shiire_home' %}" class="menu-button">仕入れ先TBL</a>
         {% csrf_token %}
     </div>

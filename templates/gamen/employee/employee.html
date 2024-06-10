@@ -55,9 +55,16 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px; /* 追加：ボタン間のスペース */
         }
         button:hover {
             background-color: #45a049;
+        }
+        #home-button {
+            background-color: #008CBA; /* ホームボタンの色 */
+        }
+        #home-button:hover {
+            background-color: #007BB5; /* ホームボタンのホバー時の色 */
         }
     </style>
     <script>
@@ -76,8 +83,8 @@
     </script>
 </head>
 <body>
-<div class="container">
-    <h1>従業員登録</h1>
+<div id="container">
+    <h1>ユーザー登録</h1>
     <form method="post" action="{% url 'employee_registration' %}">
         {% csrf_token %}
         <label for="empid">ユーザーID:</label>
@@ -93,7 +100,8 @@
         <input type="password" id="password" name="password" required><br>
 
         <label for="confirm_password">パスワード確認:</label>
-        <input type="password" id="confirm_password" name="confirm_password" required><br>
+        <input type="password" id="confirm_password" name="confirm_password" required oninput="checkPasswordMatch()"><br>
+        <span id="password_match" style="color: red;"></span><br>
 
         <label for="emprole">ロール:</label>
         <select id="emprole" name="emprole">
@@ -104,6 +112,7 @@
 
         <button type="submit">登録</button>
     </form>
+    <button id="home-button" onclick="location.href='{% url 'home' %}'">ホームに戻る</button>
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
