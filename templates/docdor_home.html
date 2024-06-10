@@ -56,8 +56,8 @@
         {% csrf_token %}
         <a href="{% url 'prescribe_medicine' %}" class="menu-button">薬投与指示</a>
         {% csrf_token %}
-        <a href="#" class="menu-button">処置履歴</a>
-        
+        <a href="{% url 'treatment_history' %}" class="menu-button">処置履歴</a>
+        {% csrf_token %}
     </div>
 </div>
 

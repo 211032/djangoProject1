@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>処置履歴確認結果</title>
+</head>
+<body>
+<h1>処置履歴確認結果</h1>
+<h2>患者情報</h2>
+<p>患者ID: {{ patient.patid }}</p>
+<p>氏名: {{ patient.patlname }} {{ patient.patfname }}</p>
+
+<h2>処置履歴</h2>
+{% if treatments %}
+    <ul>
+        {% for treatment in treatments %}
+            <li>
+                医師ID: {{ treatment.empid_id }}<br>
+                薬剤ID: {{ treatment.medicineid_id }}<br>
+                投与量: {{ treatment.dosage }}<br>
+                状態: {{ treatment.status }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>処置履歴がありません。</p>
+{% endif %}
+<a href="{% url 'treatment_history' %}">患者IDを指定する</a>
+<a href="{% url 'home' %}">メニューに戻る</a>
+</body>
+</html>

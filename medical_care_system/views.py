@@ -376,6 +376,9 @@ def doctor_home(request):
 
 
 
+
+
+
 def prescribe_medicine(request):
     empid = request.session.get('empid')
     current_user = get_object_or_404(Employee, empid=empid)
@@ -423,6 +426,7 @@ def prescription_list(request):
         index = int(request.POST.get('index', -1))
         if action == 'confirm' and index >= 0:
             request.session['confirm_prescription'] = request.session['prescriptions'][index]
+            request.session['confirm_prescription_index'] = index
             return redirect('confirm_prescription')
         elif action == 'delete' and index >= 0:
             prescriptions = request.session.get('prescriptions', [])
@@ -439,6 +443,7 @@ def prescription_list(request):
 
 def confirm_prescription(request):
     prescription = request.session.get('confirm_prescription')
+    prescription_index = request.session.get('confirm_prescription_index')
     if not prescription:
         messages.error(request, '処置情報がありません。')
         return redirect('prescribe_medicine')
@@ -454,12 +459,21 @@ def confirm_prescription(request):
                 status='confirmed'
             )
             messages.success(request, '処置が確定されました。')
+            # 処方リストから削除
+            prescriptions = request.session.get('prescriptions', [])
+            if prescription_index is not None and prescription_index < len(prescriptions):
+                del prescriptions[prescription_index]
+                request.session['prescriptions'] = prescriptions
+            # セッションから確定処方を削除
             del request.session['confirm_prescription']
+            del request.session['confirm_prescription_index']
             return redirect('doctor_home')
         elif action == 'edit':
-            return redirect('prescribe_medicine')
+            return redirect('prescription_list')
         elif action == 'delete':
+            # セッションから確定処方を削除
             del request.session['confirm_prescription']
+            del request.session['confirm_prescription_index']
             messages.info(request, '処置が削除されました。')
             return redirect('prescription_list')
 
@@ -469,6 +483,26 @@ def confirm_prescription(request):
 
 
 
+def treatment_history(request):
+    empid = request.session.get('empid')
+    current_user = get_object_or_404(Employee, empid=empid)
 
+    treatments = Treatment.objects.all()
 
+    if request.method == 'POST':
+        patid = request.POST.get('patid')
+        return redirect('treatment_history_results', patid=patid)
 
+    return render(request, 'gamen/Treatment/treatment_history.html', {'treatments': treatments})
+
+def treatment_history_results(request, patid):
+    empid = request.session.get('empid')
+    current_user = get_object_or_404(Employee, empid=empid)
+
+    patient_instance = get_object_or_404(patient, patid=patid)
+    treatments = Treatment.objects.filter(patid=patient_instance)
+
+    if not treatments.exists():
+        messages.info(request, "該当患者に処置履歴がありません。")
+
+    return render(request, 'gamen/Treatment/treatment_history_results.html', {'patient': patient_instance, 'treatments': treatments})

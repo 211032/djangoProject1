@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>処置履歴確認</title>
+</head>
+<body>
+<h1>処置履歴確認</h1>
+<form method="post" action="{% url 'treatment_history' %}">
+    {% csrf_token %}
+    <label for="patid">患者ID:</label>
+    <input type="text" id="patid" name="patid" required>
+    <button type="submit">確認する</button>
+</form>
+<h2>全ての処置履歴</h2>
+<ul>
+    {% for treatment in treatments %}
+        <li>
+            日時: {{ treatment.date }}<br>
+            患者ID: {{ treatment.patid.patid }}<br>
+            患者名: {{ treatment.patid.patlname }} {{ treatment.patid.patfname }}<br>
+            医師ID: {{ treatment.empid_id }}<br>
+            薬剤ID: {{ treatment.medicineid_id }}<br>
+            投与量: {{ treatment.dosage }}<br>
+            状態: {{ treatment.status }}
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'doctor_home' %}">メニューに戻る</a>
+</body>
+</html>
