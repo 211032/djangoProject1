@@ -52,11 +52,38 @@
         button:hover {
             background-color: #45a049;
         }
+        .messages {
+            margin-bottom: 20px;
+        }
+        .messages .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .messages .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .messages .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
 <div id="container">
     <h1>仕入れ先登録</h1>
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}
+    </div>
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
@@ -83,8 +110,9 @@
             <label for="nouki">納期:</label>
             <input type="text" id="nouki" name="nouki" required>
         </div>
-        <div class="form-group">
+        <div class="button-group">
             <button type="submit">登録確認</button>
+            <button type="button" onclick="window.location.href='{% url 'home' %}'">ホームに戻る</button>
         </div>
     </form>
 </div>

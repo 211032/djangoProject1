@@ -16,13 +16,11 @@
 <ul>
     {% for treatment in treatments %}
         <li>
-            日時: {{ treatment.date }}<br>
             患者ID: {{ treatment.patid.patid }}<br>
             患者名: {{ treatment.patid.patlname }} {{ treatment.patid.patfname }}<br>
             医師ID: {{ treatment.empid_id }}<br>
             薬剤ID: {{ treatment.medicineid_id }}<br>
             投与量: {{ treatment.dosage }}<br>
-            状態: {{ treatment.status }}
         </li>
     {% endfor %}
 </ul>

@@ -5,6 +5,8 @@ from medical_care_system.models import Employee, shiiregyousha, patient, medicin
 from django.contrib.auth.decorators import login_required
 
 
+
+
 # Create your views here.
 
 def login(request, error_meessage=None):
@@ -102,9 +104,7 @@ def employee_update_form(request):
     return render(request, 'gamen/employee/employee_update_form.html')
 
 
-from django.shortcuts import get_object_or_404, render
-from django.contrib import messages
-from .models import Employee
+
 
 def change_password(request):
     # セッションからユーザー情報を取得
@@ -114,11 +114,15 @@ def change_password(request):
     current_user = get_object_or_404(Employee, empid=empid)
 
     if request.method == 'POST':
-        # パスワードを変更する従業員を特定
-        employee = get_object_or_404(Employee, empid=request.POST['empid'])
+        # 入力されたempidがデータベースに存在するか確認
+        try:
+            employee = Employee.objects.get(empid=request.POST['empid'])
+        except Employee.DoesNotExist:
+            messages.error(request, "入力されたIDは存在しません。")
+            return render(request, 'gamen/employee/change_password_admin.html')
 
         # 管理者以外の場合はエラーメッセージを表示し、現在のページに戻る
-        if employee.emprole != 0:
+        if current_user.emprole != 0:
             messages.error(request, "このユーザーはパスワードを変更する権限がありません。")
             return render(request, 'gamen/employee/change_password_admin.html', {'employee': employee})
 
@@ -129,12 +133,12 @@ def change_password(request):
             messages.error(request, "パスワードが一致しません。")
             return render(request, 'gamen/employee/change_password_admin.html', {'employee': employee})
 
-        employee.emppasswd = password
-        employee.save()
-        messages.success(request, "パスワードが正常に変更されました。")
-        return render(request, 'gamen/employee/change_password_admin.html', {'employee': employee})
-
     return render(request, 'gamen/employee/change_password_admin.html')
+
+
+
+
+import re
 
 def shiire_registration(request):
     if request.method == 'POST':
@@ -156,10 +160,24 @@ def shiire_registration(request):
             errors.append('仕入れ先住所 を入力してください。')
         if not shiiretel:
             errors.append('仕入れ先電話番号 を入力してください。')
+        elif not re.match(r'^[0-9\(\)\-]+$', shiiretel):
+            errors.append('仕入れ先電話番号 は数字、（）、- のみを含む必要があります。')
         if not shiirehonkin:
             errors.append('資本金 を入力してください。')
+        else:
+            # カンマと円記号を取り除く
+            cleaned_shiirehonkin = re.sub(r'[^\d]', '', shiirehonkin)
+            try:
+                shiirehonkin = int(cleaned_shiirehonkin)
+            except ValueError:
+                errors.append('資本金 には数値のみを含む必要があります。')
         if not nouki:
             errors.append('納期 を入力してください。')
+        else:
+            try:
+                nouki = int(nouki)
+            except ValueError:
+                errors.append('納期 には数字を入力してください。')
 
         if errors:
             for error in errors:
@@ -170,8 +188,8 @@ def shiire_registration(request):
             messages.error(request, "この仕入れ先 ID は既に存在しています。")
             return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
 
-        # Shiiregyousha オブジェクトを作成
-        shiiregyousha.objects.create(
+        # 登録処理
+        new_shiire = shiiregyousha(
             shiireid=shiireid,
             shiiremei=shiiremei,
             shiireaddress=shiireaddress,
@@ -179,10 +197,18 @@ def shiire_registration(request):
             shiirehonkin=shiirehonkin,
             nouki=nouki
         )
-        messages.success(request, '仕入れ先が正常に登録されました。')
+        new_shiire.save()
+
+        # 登録成功メッセージ
+        messages.success(request, "登録しました。")
         return redirect('shiire_registration')
 
     return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
+
+
+
+
+
 
 def shiire_list(request):
     shiiregyousha_list = shiiregyousha.objects.all()
