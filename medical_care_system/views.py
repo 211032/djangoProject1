@@ -164,6 +164,8 @@ def shiire_registration(request):
             errors.append('仕入れ先電話番号 は数字、（）、- のみを含む必要があります。')
         if not shiirehonkin:
             errors.append('資本金 を入力してください。')
+        elif not re.match(r'^[0-9,円]*$', shiirehonkin):
+            errors.append('資本金 は数字、カンマ、円記号のみを含む必要があります。')
         else:
             # カンマと円記号を取り除く
             cleaned_shiirehonkin = re.sub(r'[^\d]', '', shiirehonkin)
@@ -205,14 +207,14 @@ def shiire_registration(request):
 
     return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
 
-
-
-
-
-
 def shiire_list(request):
     shiiregyousha_list = shiiregyousha.objects.all()
+
+    if not shiiregyousha_list:
+        messages.error(request, "現在、登録されている仕入れ先情報はありません。")
+
     return render(request, 'gamen/shiiregyousha/shiire_list.html', {'shiiregyousha_list': shiiregyousha_list})
+
 
 def shiire_search(request):
     if request.method == 'POST':
@@ -242,9 +244,9 @@ def patient_registration(request):
 
         if not patient_id:
             errors.append('患者IDを入力してください。')
-        if not last_name:
-            errors.append('姓を入力してください。')
         if not first_name:
+            errors.append('姓を入力してください。')
+        if not last_name:
             errors.append('名を入力してください。')
         if not insurance_number:
             errors.append('保険証記号番号を入力してください。')
@@ -290,9 +292,9 @@ def patient_insurance_change(request):
         errors = []
         if not patid:
             errors.append('患者IDを入力してください。')
-        if not patlname:
-            errors.append('姓を入力してください。')
         if not patfname:
+            errors.append('姓を入力してください。')
+        if not patlname:
             errors.append('名を入力してください。')
         if not hokenmei:
             errors.append('保険証記号番号を入力してください。')
@@ -329,9 +331,9 @@ def patient_insurance_change(request):
         errors = []
         if not patid:
             errors.append('患者IDを入力してください。')
-        if not patlname:
-            errors.append('姓を入力してください。')
         if not patfname:
+            errors.append('姓を入力してください。')
+        if not patlname:
             errors.append('名を入力してください。')
         if not hokenmei and not hokenexp:
             errors.append('保険証記号番号または有効期限を入力してください。')

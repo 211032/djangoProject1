@@ -29,6 +29,24 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        .messages {
+            margin-bottom: 20px;
+        }
+        .messages .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .messages .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .messages .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -57,30 +75,39 @@
     <h1>仕入れ先一覧</h1>
 </header>
 <main>
-    <table>
-        <thead>
-        <tr>
-            <th>仕入れ先 ID</th>
-            <th>仕入れ先名</th>
-            <th>住所</th>
-            <th>電話番号</th>
-            <th>資本金</th>
-            <th>納期</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for shiire in shiiregyousha_list %}
-            <tr>
-                <td>{{ shiire.shiireid }}</td>
-                <td>{{ shiire.shiiremei }}</td>
-                <td>{{ shiire.shiireaddress }}</td>
-                <td>{{ shiire.shiiretel }}</td>
-                <td>{{ shiire.shiirehonkin }}</td>
-                <td>{{ shiire.nouki }}</td>
-            </tr>
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
         {% endfor %}
-        </tbody>
-    </table>
+    </div>
+    {% if shiiregyousha_list %}
+        <table>
+            <thead>
+            <tr>
+                <th>仕入れ先 ID</th>
+                <th>仕入れ先名</th>
+                <th>住所</th>
+                <th>電話番号</th>
+                <th>資本金</th>
+                <th>納期</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for shiire in shiiregyousha_list %}
+                <tr>
+                    <td>{{ shiire.shiireid }}</td>
+                    <td>{{ shiire.shiiremei }}</td>
+                    <td>{{ shiire.shiireaddress }}</td>
+                    <td>{{ shiire.shiiretel }}</td>
+                    <td>{{ shiire.shiirehonkin }}</td>
+                    <td>{{ shiire.nouki }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>現在、登録されている仕入れ先情報はありません。</p>
+    {% endif %}
 </main>
 <footer>
     <p>&copy; 2024 Your Company</p>
