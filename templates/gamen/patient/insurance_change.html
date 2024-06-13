@@ -2,30 +2,50 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>患者検索</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-<div>
-    <h1>患者保険証変更</h1>
-    {% if messages %}
-        <div>
-            <p style="color: green;">{{ messages }}</p>
-        </div>
-    {% endif %}
-<form method="post">
+<h1>患者検索</h1>
+
+<form method="POST" action="{% url 'patient_search' %}">
     {% csrf_token %}
-    <label for="patid">患者ID:</label>
-    <input type="text" id="patid" name="patid" required><br><br>
-    <label for="patlname">姓:</label>
-    <input type="text" id="patlname" name="patlname" required><br><br>
-    <label for="patfname">名:</label>
-    <input type="text" id="patfname" name="patfname" required><br><br>
-    <label for="hokenmei">保険証記号番号:</label>
-    <input type="text" id="hokenmei" name="hokenmei" required><br><br>
-    <label for="hokenexp">有効期限:</label>
-    <input type="date" id="hokenexp" name="hokenexp" required><br><br>
-    <input type="submit" value="変更確認">
+    <label for="patfname">患者名:</label>
+    <input type="text" id="patfname" name="patfname" placeholder="名">
+    <label for="patlname">患者姓:</label>
+    <input type="text" id="patlname" name="patlname" placeholder="姓">
+    <button type="submit">検索</button>
 </form>
-</div>
+
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if patients %}
+    <h2>検索結果</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>名前</th>
+            <th>姓</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for patient in patients %}
+            <tr>
+                <td>{{ patient.patid }}</td>
+                <td>{{ patient.patfname }}</td>
+                <td>{{ patient.patlname }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
 </body>
 </html>

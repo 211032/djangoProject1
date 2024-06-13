@@ -75,12 +75,12 @@
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label for="patlname">姓:</label>
-            <input type="text" id="patlname" name="patlname" required>
+            <label for="patfname">姓:</label>
+            <input type="text" id="patfname" name="patfname">
         </div>
         <div class="form-group">
-            <label for="patfname">名:</label>
-            <input type="text" id="patfname" name="patfname">
+            <label for="patlname">名:</label>
+            <input type="text" id="patlname" name="patlname">
         </div>
         <button type="submit">検索</button>
     </form>
@@ -91,15 +91,17 @@
             {% for patient in patients %}
                 <li>
                     <strong>ID:</strong> {{ patient.patid }}<br>
-                    <strong>姓:</strong> {{ patient.patlname }}<br>
-                    <strong>名:</strong> {{ patient.patfname }}<br>
+                    <strong>姓:</strong> {{ patient.patfname }}<br>
+                    <strong>名:</strong> {{ patient.patlname }}<br>
                     <strong>保険名:</strong> {{ patient.hokenmei }}<br>
                     <strong>保険有効期限:</strong> {{ patient.hokenexp }}
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>該当する患者が見つかりませんでした。</p>
+        {% if request.method == 'POST' %}
+            <p>該当する患者が見つかりませんでした。</p>
+        {% endif %}
     {% endif %}
 </div>
 </body>
