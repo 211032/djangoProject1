@@ -383,7 +383,6 @@ def doctor_home(request):
 
 
 
-
 def prescribe_medicine(request):
     empid = request.session.get('empid')
     current_user = get_object_or_404(Employee, empid=empid)
@@ -423,7 +422,6 @@ def prescribe_medicine(request):
     medicines = medicine.objects.all()
     return render(request, 'gamen/Treatment/prescribe_medicine.html', {'medicines': medicines})
 
-
 def prescription_list(request):
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -445,7 +443,6 @@ def prescription_list(request):
     prescriptions = request.session.get('prescriptions', [])
     return render(request, 'gamen/Treatment/prescription_list.html', {'prescriptions': prescriptions})
 
-
 def confirm_prescription(request):
     prescriptions = request.session.get('prescriptions', [])
     if not prescriptions:
@@ -466,11 +463,13 @@ def confirm_prescription(request):
             messages.success(request, 'すべての処置が確定されました。')
             request.session['prescriptions'] = []
             request.session.modified = True
-            return redirect('doctor_home')
         elif action == 'edit':
             return redirect('prescription_list')
 
     return render(request, 'gamen/Treatment/confirm_prescription.html', {'prescriptions': prescriptions})
+
+
+
 
 
 

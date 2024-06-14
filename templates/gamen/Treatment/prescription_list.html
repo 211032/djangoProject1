@@ -2,40 +2,167 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>処方リスト</title>
+    <link href="/static/gamen/style.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        main {
+            margin: 20px auto;
+            width: 80%;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid red;
+            background-color: #ffe6e6;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .table-container {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .button-container a, .button-container button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .button-container a:hover, .button-container button:hover {
+            background-color: #45a049;
+        }
+        .back-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-button a {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .back-button a:hover {
+            background-color: #45a049;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 20px;
+            position: relative;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
 </head>
 <body>
-{% block content %}
-    <h2>処方リスト</h2>
-    {% if prescriptions %}
-        <form method="post">
-            {% csrf_token %}
-            <table>
-                <tr>
-                    <th>患者名</th>
-                    <th>薬剤名</th>
-                    <th>投薬量</th>
-                    <th>アクション</th>
-                </tr>
-                {% for prescription in prescriptions %}
-                    <tr>
-                        <td>{{ prescription.patient_name }}</td>
-                        <td>{{ prescription.medicine_name }}</td>
-                        <td>{{ prescription.dosage }}</td>
-                        <td>
-                            <input type="hidden" name="index" value="{{ forloop.counter0 }}">
-                            <button type="submit" name="action" value="confirm">処置確定</button>
-                            <button type="submit" name="action" value="delete">削除</button>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-            <button type="submit" name="action" value="confirm_all">すべて確定</button>
-        </form>
-    {% else %}
-        <p>処方がありません。</p>
+<header>
+    <h1>処方リスト</h1>
+</header>
+<main>
+    {% if messages %}
+        <div class="message">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
     {% endif %}
-    <a href="{% url 'prescribe_medicine' %}">新しい処方を追加</a>
-{% endblock %}
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>患者名</th>
+                <th>薬剤名</th>
+                <th>投薬量</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for prescription in prescriptions %}
+                <tr>
+                    <td>{{ prescription.patient_name }}</td>
+                    <td>{{ prescription.medicine_name }}</td>
+                    <td>{{ prescription.dosage }}</td>
+                    <td>
+                        <form method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="index" value="{{ forloop.counter0 }}">
+                            <button type="submit" name="action" value="confirm">確認</button>
+                            <button type="submit" name="action" value="delete">削除</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="button-container">
+        <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" name="action" value="confirm_all">すべて確認</button>
+        </form>
+        <a href="{% url 'prescribe_medicine' %}">投薬指示に移動</a>
+    </div>
+    <div class="back-button">
+        <a href="{% url 'doctor_home' %}">ホームに戻る</a>
+    </div>
+</main>
+<footer>
+    <p>&copy; 2024 Your Clinic</p>
+</footer>
 </body>
 </html>

@@ -1,26 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>薬投与指示</title>
+    <link href="/static/gamen/style.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        main {
+            margin: 20px auto;
+            width: 80%;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid red;
+            background-color: #ffe6e6;
+            border-radius: 4px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        form label {
+            margin: 10px 0 5px;
+        }
+        form input, form select {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 400px;
+        }
+        form input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: auto;
+            padding: 10px 20px;
+            margin-top: 20px;
+        }
+        form input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .back-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-button a {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .back-button a:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-<h1>薬投与指示</h1>
-<form method="post">
-    {% csrf_token %}
-    <label for="patid">患者ID:</label>
-    <input type="text" name="patid" id="patid"><br>
+<header>
+    <h1>薬投与指示</h1>
+</header>
+<main>
+    {% if messages %}
+        <div class="message">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="patid">患者ID:</label>
+        <input type="text" name="patid" id="patid" required>
 
-    <label for="medicineid">薬剤名:</label>
-    <select name="medicineid" id="medicineid">
-        {% for med in medicines %}
-            <option value="{{ med.medicineid }}">{{ med.medicinename }}</option>
-        {% endfor %}
-    </select><br>
+        <label for="medicineid">薬剤名:</label>
+        <select name="medicineid" id="medicineid" required>
+            <option value="">薬剤を選択</option>
+            {% for med in medicines %}
+                <option value="{{ med.medicineid }}">{{ med.medicinename }}</option>
+            {% endfor %}
+        </select>
 
-    <label for="dosage">投薬量:</label>
-    <input type="number" name="dosage" id="dosage"><br>
+        <label for="dosage">投薬量:</label>
+        <input type="number" name="dosage" id="dosage" required>
 
-    <button type="submit">確認</button>
-</form>
+        <input type="submit" value="追加">
+    </form>
+    <div class="back-button">
+        <a href="{% url 'doctor_home' %}">ホームに戻る</a>
+    </div>
+</main>
 </body>
 </html>
