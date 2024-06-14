@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>患者一覧</title>
+    <title>患者一覧検索</title>
     <link href="gamen/style.css" rel="stylesheet">
     <style>
         body {
@@ -26,6 +26,30 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-container form {
+            display: inline-block;
+        }
+        .search-container input[type="text"] {
+            padding: 5px;
+            font-size: 16px;
+        }
+        .search-container input[type="submit"] {
+            padding: 5px 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .error-message {
+            color: red;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -54,9 +78,18 @@
 </head>
 <body>
 <header>
-    <h1>患者一覧</h1>
+    <h1>患者一覧検索</h1>
 </header>
 <main>
+    <div class="search-container">
+        <form method="get" action="">
+            <input type="text" name="q" placeholder="患者ID、名、姓を検索">
+            <input type="submit" value="検索">
+        </form>
+    </div>
+    {% if error_message %}
+        <div class="error-message">{{ error_message }}</div>
+    {% endif %}
     <table>
         <thead>
         <tr>

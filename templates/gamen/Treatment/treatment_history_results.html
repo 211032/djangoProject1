@@ -2,30 +2,93 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>処置履歴確認結果</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>処置履歴結果</title>
+    <link href="/static/gamen/style.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        main {
+            margin: 20px auto;
+            width: 80%;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
-<h1>処置履歴確認結果</h1>
-<h2>患者情報</h2>
-<p>患者ID: {{ patient.patid }}</p>
-<p>氏名: {{ patient.patlname }} {{ patient.patfname }}</p>
-
-<h2>処置履歴</h2>
-{% if treatments %}
-    <ul>
-        {% for treatment in treatments %}
-            <li>
-                医師ID: {{ treatment.empid_id }}<br>
-                薬剤ID: {{ treatment.medicineid_id }}<br>
-                投与量: {{ treatment.dosage }}<br>
-                状態: {{ treatment.status }}
-            </li>
+<header>
+    <h1>処置履歴結果</h1>
+</header>
+<main>
+    <div class="message">
+        {% for message in messages %}
+            <p>{{ message }}</p>
         {% endfor %}
-    </ul>
-{% else %}
-    <p>処置履歴がありません。</p>
-{% endif %}
-<a href="{% url 'treatment_history' %}">患者IDを指定する</a>
-<a href="{% url 'home' %}">メニューに戻る</a>
+    </div>
+    <h2>患者情報</h2>
+    <p>ID: {{ patient.patid }}</p>
+    <p>名前: {{ patient.patfname }} {{ patient.patlname }}</p>
+    <h2>処置履歴</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>治療ID</th>
+            <th>従業員ID</th>
+            <th>患者ID</th>
+            <th>薬品ID</th>
+            <th>投与量</th>
+            <th>ステータス</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for treatment in treatments %}
+            <tr>
+                <td>{{ treatment.treatment_id }}</td>
+                <td>{{ treatment.empid.empid }}</td>
+                <td>{{ treatment.patid.patid }}</td>
+                <td>{{ treatment.medicineid.medicineid }}</td>
+                <td>{{ treatment.dosage }}</td>
+                <td>{{ treatment.status }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</main>
+<footer>
+    <p>&copy; 2024 Your Clinic</p>
+</footer>
 </body>
 </html>

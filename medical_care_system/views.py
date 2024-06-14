@@ -364,12 +364,24 @@ def patient_search(request):
     return render(request, 'gamen/patient/patient_search.html', {'patients': patients})
 
 
+
 def patients(request):
-    patients = patient.objects.all()
-    return render(request, 'gamen/medicine/patients.html', {'patients': patients})
+    query = request.GET.get('q')
+    error_message = None
+    if query:
+        patients = patient.objects.filter(Q(patid__icontains=query) | Q(patfname__icontains=query) | Q(patlname__icontains=query))
+        if not patients:
+            error_message = "該当する患者が見つかりませんでした。"
+    else:
+        patients = patient.objects.all()
+    return render(request, 'gamen/medicine/patients.html', {'patients': patients, 'error_message': error_message})
+
+
 
 def doctor_home(request):
     return render(request, 'docdor_home.html')
+
+
 
 
 def prescribe_medicine(request):
@@ -462,8 +474,6 @@ def confirm_prescription(request):
 
 
 
-
-
 def treatment_history(request):
     empid = request.session.get('empid')
     current_user = get_object_or_404(Employee, empid=empid)
@@ -472,6 +482,12 @@ def treatment_history(request):
 
     if request.method == 'POST':
         patid = request.POST.get('patid')
+        try:
+            patient_instance = patient.objects.get(patid=patid)
+        except patient.DoesNotExist:
+            messages.error(request, "該当する患者が見つかりませんでした。")
+            return redirect('treatment_history')
+
         return redirect('treatment_history_results', patid=patid)
 
     return render(request, 'gamen/Treatment/treatment_history.html', {'treatments': treatments})

@@ -2,28 +2,152 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>処置履歴確認</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>処置履歴</title>
+    <link href="/static/gamen/style.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        main {
+            margin: 20px auto;
+            width: 80%;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-container form {
+            display: inline-block;
+        }
+        .search-container input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 8px;
+        }
+        .search-container input[type="submit"] {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search-container input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid red;
+            background-color: #ffe6e6;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .table-container {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 20px;
+            position: relative;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
 </head>
 <body>
-<h1>処置履歴確認</h1>
-<form method="post" action="{% url 'treatment_history' %}">
-    {% csrf_token %}
-    <label for="patid">患者ID:</label>
-    <input type="text" id="patid" name="patid" required>
-    <button type="submit">確認する</button>
-</form>
-<h2>全ての処置履歴</h2>
-<ul>
-    {% for treatment in treatments %}
-        <li>
-            患者ID: {{ treatment.patid.patid }}<br>
-            患者名: {{ treatment.patid.patlname }} {{ treatment.patid.patfname }}<br>
-            医師ID: {{ treatment.empid_id }}<br>
-            薬剤ID: {{ treatment.medicineid_id }}<br>
-            投与量: {{ treatment.dosage }}<br>
-        </li>
-    {% endfor %}
-</ul>
-<a href="{% url 'doctor_home' %}">メニューに戻る</a>
+<header>
+    <h1>処置履歴</h1>
+</header>
+<main>
+    <div class="search-container">
+        <form method="post" action="">
+            {% csrf_token %}
+            <input type="text" name="patid" placeholder="患者IDを入力">
+            <input type="submit" value="検索">
+        </form>
+    </div>
+    {% if messages %}
+        <div class="message">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>治療ID</th>
+                <th>従業員ID</th>
+                <th>患者ID</th>
+                <th>薬品ID</th>
+                <th>投与量</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for treatment in treatments %}
+                <tr>
+                    <td>{{ treatment.treatment_id }}</td>
+                    <td>{{ treatment.empid.empid }}</td>
+                    <td>{{ treatment.patid.patid }}</td>
+                    <td>{{ treatment.medicineid.medicineid }}</td>
+                    <td>{{ treatment.dosage }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+<footer>
+    <p>&copy; 2024 Your Clinic</p>
+</footer>
 </body>
 </html>
