@@ -2,50 +2,87 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>患者検索</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>患者保険証変更</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .form-container h2 {
+            text-align: center;
+        }
+        .form-container label {
+            display: block;
+            margin-top: 10px;
+        }
+        .form-container input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        .form-container button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+        .error, .success {
+            color: white;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .error {
+            background-color: #f44336;
+        }
+        .success {
+            background-color: #4CAF50;
+        }
+    </style>
 </head>
 <body>
-<h1>患者検索</h1>
+<div class="form-container">
+    <h2>患者保険証変更</h2>
+    <form method="post" action="{% url 'patient_insurance_change' %}">
+        {% csrf_token %}
+        <label for="patid">患者ID:</label>
+        <input type="text" id="patid" name="patid" value="{{ request.POST.patid }}">
 
-<form method="POST" action="{% url 'patient_search' %}">
-    {% csrf_token %}
-    <label for="patfname">患者名:</label>
-    <input type="text" id="patfname" name="patfname" placeholder="名">
-    <label for="patlname">患者姓:</label>
-    <input type="text" id="patlname" name="patlname" placeholder="姓">
-    <button type="submit">検索</button>
-</form>
+        <label for="patlname">姓:</label>
+        <input type="text" id="patlname" name="patlname" value="{{ request.POST.patlname }}">
 
-{% if messages %}
-    <ul>
+        <label for="patfname">名:</label>
+        <input type="text" id="patfname" name="patfname" value="{{ request.POST.patfname }}">
+
+        <label for="hokenmei">保険証記号番号:</label>
+        <input type="text" id="hokenmei" name="hokenmei" value="{{ request.POST.hokenmei }}">
+
+        <label for="hokenexp">有効期限 (YYYY-MM-DD):</label>
+        <input type="date" id="hokenexp" name="hokenexp" value="{{ request.POST.hokenexp }}">
+
+        <button type="submit">変更確認</button>
+    </form>
+
+    {% if messages %}
         {% for message in messages %}
-            <li>{{ message }}</li>
+            <div class="{% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
         {% endfor %}
-    </ul>
-{% endif %}
-
-{% if patients %}
-    <h2>検索結果</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>名前</th>
-            <th>姓</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for patient in patients %}
-            <tr>
-                <td>{{ patient.patid }}</td>
-                <td>{{ patient.patfname }}</td>
-                <td>{{ patient.patlname }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
+    {% endif %}
+</div>
 </body>
 </html>

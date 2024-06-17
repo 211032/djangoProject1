@@ -143,6 +143,7 @@ def change_password(request):
 
 import re
 
+
 def shiire_registration(request):
     if request.method == 'POST':
         shiireid = request.POST.get('shiireid')
@@ -165,6 +166,8 @@ def shiire_registration(request):
             errors.append('仕入れ先電話番号 を入力してください。')
         elif not re.match(r'^[0-9\(\)\-]+$', shiiretel):
             errors.append('仕入れ先電話番号 は数字、（）、- のみを含む必要があります。')
+        elif len(re.sub(r'[^0-9]', '', shiiretel)) != 11:  # 電話番号の数字が11桁であることを確認
+            errors.append('仕入れ先電話番号 は11桁の数字でなければなりません。')
         if not shiirehonkin:
             errors.append('資本金 を入力してください。')
         elif not re.match(r'^[0-9,円]*$', shiirehonkin):
@@ -193,7 +196,7 @@ def shiire_registration(request):
             messages.error(request, "この仕入れ先 ID は既に存在しています。")
             return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
 
-        # 登録処理
+        # 新しい仕入れ先情報の作成
         new_shiire = shiiregyousha(
             shiireid=shiireid,
             shiiremei=shiiremei,
@@ -204,11 +207,14 @@ def shiire_registration(request):
         )
         new_shiire.save()
 
-        # 登録成功メッセージ
-        messages.success(request, "登録しました。")
-        return redirect('shiire_registration')
+        messages.success(request, '仕入れ先情報が正常に登録されました。')
+        return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
 
     return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
+
+
+
+
 
 def shiire_list(request):
     shiiregyousha_list = shiiregyousha.objects.all()
@@ -234,6 +240,7 @@ def shiire_search(request):
 
     return render(request, 'gamen/shiiregyousha/shiire_search.html')
 
+
 def patient_registration(request):
     if request.method == 'POST':
         patient_id = request.POST.get('patid')
@@ -253,6 +260,8 @@ def patient_registration(request):
             errors.append('名を入力してください。')
         if not insurance_number:
             errors.append('保険証記号番号を入力してください。')
+        elif len(re.sub(r'[^0-9]', '', insurance_number)) != 10:  # 保険証番号が10桁であることを確認
+            errors.append('保険証記号番号は10桁の数字でなければなりません。')
         if not expiration_date:
             errors.append('有効期限を入力してください。')
 
@@ -275,14 +284,14 @@ def patient_registration(request):
     return render(request, 'gamen/patient/patient_registration.html')
 
 
+
+
+
+
+
 def patient_insurance_change(request):
     empid = request.session.get('empid')
     current_user = get_object_or_404(Employee, empid=empid)
-
-    # Ensure only reception role can access this function
-    if current_user.emprole != 1:
-        messages.error(request, "この機能は受付のみが利用できます。")
-        return redirect('home')
 
     if request.method == 'POST':
         patid = request.POST.get('patid')
@@ -301,34 +310,49 @@ def patient_insurance_change(request):
             errors.append('名を入力してください。')
         if not hokenmei and not hokenexp:
             errors.append('保険証記号番号または有効期限を入力してください。')
+        if hokenmei and len(re.sub(r'[^0-9]', '', hokenmei)) != 10:  # 保険証番号が10桁であることを確認
+            errors.append('保険証記号番号は10桁の数字でなければなりません。')
 
-        patient_instance = get_object_or_404(patient, patid=patid)
-        current_hokenexp = patient_instance.hokenexp
+        # Check if the patient exists in the database
+        try:
+            patient_instance = patient.objects.get(patid=patid)
+        except patient.DoesNotExist:
+            errors.append('指定された患者IDは存在しません。')
+            patient_instance = None
 
-        # Check if the new expiration date is older or the same as the current expiration date
-        if hokenexp:
-            try:
-                new_hokenexp_date = datetime.strptime(hokenexp, '%Y-%m-%d').date()
-                if new_hokenexp_date <= current_hokenexp:
-                    errors.append('有効期限は現在の期限よりも新しい日付でなければなりません。')
-            except ValueError:
-                errors.append('有効期限は有効な日付形式である必要があります（YYYY-MM-DD）。')
+        if patient_instance:
+            current_hokenexp = patient_instance.hokenexp
+
+            # Check if the new expiration date is older or the same as the current expiration date
+            if hokenexp:
+                try:
+                    new_hokenexp_date = datetime.strptime(hokenexp, '%Y-%m-%d').date()
+                    if new_hokenexp_date <= current_hokenexp:
+                        errors.append('有効期限は現在の期限よりも新しい日付でなければなりません。')
+                except ValueError:
+                    errors.append('有効期限は有効な日付形式である必要があります（YYYY-MM-DD）。')
 
         if errors:
             for error in errors:
                 messages.error(request, error)
             return render(request, 'gamen/patient/insurance_change.html')
 
-        if hokenmei:
-            patient_instance.hokenmei = hokenmei
-        if hokenexp:
-            patient_instance.hokenexp = hokenexp
-        patient_instance.save()
+        if patient_instance:
+            if hokenmei:
+                patient_instance.hokenmei = hokenmei
+            if hokenexp:
+                patient_instance.hokenexp = hokenexp
+            patient_instance.save()
 
-        messages.success(request, '保険証情報が正常に変更されました。')
-        return redirect('patient_insurance_change')
+            messages.success(request, '保険証情報が正常に変更されました。')
+            return redirect('patient_insurance_change')
 
     return render(request, 'gamen/patient/insurance_change.html')
+
+
+
+
+
 
 
 def patient_search(request):
