@@ -164,7 +164,7 @@ def shiire_registration(request):
             errors.append('仕入れ先住所 を入力してください。')
         if not shiiretel:
             errors.append('仕入れ先電話番号 を入力してください。')
-        elif not re.match(r'^[0-9\(\)\-]+$', shiiretel):
+        elif not re.match(r'^[0-9()\-]+$', shiiretel):
             errors.append('仕入れ先電話番号 は数字、（）、- のみを含む必要があります。')
         elif len(re.sub(r'[^0-9]', '', shiiretel)) != 11:  # 電話番号の数字が11桁であることを確認
             errors.append('仕入れ先電話番号 は11桁の数字でなければなりません。')
