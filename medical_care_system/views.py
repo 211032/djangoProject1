@@ -10,8 +10,6 @@ from django.contrib.auth.decorators import login_required
 
 
 
-# Create your views here.
-
 def login(request, error_meessage=None):
     if request.method == 'POST':
         username = request.POST['username']
@@ -36,6 +34,8 @@ def home(request):
     return render(request,'home.html')
 def shiire_home(request):
     return render(request,'gamen/shiiregyousha/shiire_home.html')
+def reception_home(request):
+    return render(request,'reception_home.html')
 
 
 def employee_registration(request):
@@ -138,11 +138,7 @@ def change_password(request):
 
     return render(request, 'gamen/employee/change_password_admin.html')
 
-
-
-
 import re
-
 
 def shiire_registration(request):
     if request.method == 'POST':
@@ -211,7 +207,6 @@ def shiire_registration(request):
         return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
 
     return render(request, 'gamen/shiiregyousha/shiire_registration_home.html')
-
 
 
 
@@ -493,10 +488,6 @@ def confirm_prescription(request):
     return render(request, 'gamen/Treatment/confirm_prescription.html', {'prescriptions': prescriptions})
 
 
-
-
-
-
 def treatment_history(request):
     empid = request.session.get('empid')
     current_user = get_object_or_404(Employee, empid=empid)
@@ -526,3 +517,8 @@ def treatment_history_results(request, patid):
         messages.info(request, "該当患者に処置履歴がありません。")
 
     return render(request, 'gamen/Treatment/treatment_history_results.html', {'patient': patient_instance, 'treatments': treatments})
+
+
+def tabyouin_home(request):
+    return render(request, 'gamen/tabyouin/tabyouin_home.html')
+

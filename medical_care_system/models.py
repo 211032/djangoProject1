@@ -35,3 +35,11 @@ class Treatment(models.Model):
     medicineid = models.ForeignKey('medicine', on_delete=models.CASCADE)
     dosage = models.IntegerField()
     status = models.CharField(max_length=10, default='pending')  # 'pending' or 'confirmed'
+
+class Tabyouin(models.Model):
+    tabyouinid = models.CharField(max_length=8, primary_key=True, )
+    tabyouinmei = models.CharField(max_length=64)
+    tabyouinaddress = models.CharField(max_length=64)
+    tabyouintel = models.CharField(max_length=64)
+    tabyouinshihonkin = models.IntegerField()
+    kyukyu = models.IntegerField()

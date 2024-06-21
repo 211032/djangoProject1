@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>メニュー</title>
-    <link href="style.css" rel="stylesheet">
     <style>
-        /* スタイルはここに追加 */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -22,9 +20,9 @@
         }
         .menu-button {
             display: inline-block;
-            width: 200px; /* ボタンの幅を統一 */
-            height: 50px; /* ボタンの高さを統一 */
-            padding: 10px 20px; /* 文字とボタンの内側のスペース */
+            width: 200px;
+            height: 50px;
+            padding: 10px 20px;
             margin: 10px;
             background-color: #007bff;
             color: white;
@@ -33,7 +31,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
-            text-align: center; /* テキストを中央揃え */
+            text-align: center;
         }
         .menu-button:hover {
             background-color: #0056b3;
@@ -44,27 +42,19 @@
 
 <div id="home" class="big-bg">
     <header class="page-header wrapper">
-        <h1><a href="home.html"></a><img class="logo" src="images/home.png" alt="ホーム画面"></h1>
+        <h1><a href="{% url 'home' %}"><img class="logo" src="images/home.png" alt="ホーム画面"></a></h1>
     </header>
 </div>
 
-
-
 <div class="container">
     <div class="menu-row">
-        <a href="{% url 'login' %}" class="menu-button">受付ログアウト</a>
+        <a href="{% url 'login' %}" class="menu-button">ログアウト</a>
         {% csrf_token %}
-        <a href="{% url 'patient_registration' %}" class="menu-button">患者登録</a>
+        <a href="{% url '#' %}" class="menu-button">他病院登録</a>
         {% csrf_token %}
-        <a href="{% url 'patient_insurance_change' %}" class="menu-button">患者保険証変更</a>
-        {% csrf_token %}
-    </div>
-    <div class="menu-row">
-        <a href="{% url 'patient_search' %}" class="menu-button">患者検索</a>
-        {% csrf_token %}
+
     </div>
 </div>
 
 </body>
 </html>
-

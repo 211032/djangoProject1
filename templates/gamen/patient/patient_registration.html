@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>患者登録</title>
+    <title>仕入れ先検索（住所）</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,97 +11,102 @@
             margin: 0;
             padding: 0;
         }
-        #container {
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        main {
             margin: 20px auto;
-            width: 400px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            background-color: white;
             padding: 20px;
-            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
             text-align: center;
             margin-bottom: 20px;
         }
+        .messages {
+            margin-bottom: 20px;
+        }
+        .messages .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .messages .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .messages .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
         form {
-            text-align: left;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: inline-block;
-            text-align: left;
-            margin-right: 10px;
-            width: 120px; /* ラベルの幅を固定 */
-        }
-        input[type="text"],
-        input[type="date"] {
-            width: calc(100% - 130px); /* 入力欄の幅を調整 */
+        input[type="text"] {
             padding: 8px;
+            width: 300px;
             border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
+            border-radius: 4px;
         }
-        input[type="submit"] {
-            width: 100%;
-            padding: 10px 0;
-            background-color: #4CAF50;
-            color: white;
+        button, .btn-back {
+            display: inline-block;
+            padding: 8px 16px;
             border: none;
-            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
             cursor: pointer;
+            border-radius: 4px;
+            text-decoration: none;
+            text-align: center;
+            margin-left: 8px;
         }
-        input[type="submit"]:hover {
-            background-color: #45a049;
+        button:hover, .btn-back:hover {
+            background-color: #0056b3;
         }
-        .error-message {
-            color: red;
-            margin-top: 5px;
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-<div id="container">
-    <h1>患者登録</h1>
-    {% if messages %}
-        <ul class="error-messages">
-            {% for message in messages %}
-                <li class="error-message">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+<header>
+    <h1>仕入れ先検索（住所）</h1>
+</header>
+<main>
     <form method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="patid">患者ID:</label>
-            <input type="text" id="patid" name="patid"><br>
-        </div>
-
-        <div class="form-group">
-            <label for="patfname">姓:</label>
-            <input type="text" id="patfname" name="patfname"><br>
-        </div>
-
-        <div class="form-group">
-            <label for="patlname">名:</label>
-            <input type="text" id="patlname" name="patlname"><br>
-        </div>
-
-        <div class="form-group">
-            <label for="hokenmei">保険証番号:</label>
-            <input type="text" id="hokenmei" name="hokenmei"><br>
-        </div>
-
-        <div class="form-group">
-            <label for="hokenexp">有効期限:</label>
-            <input type="date" id="hokenexp" name="hokenexp"><br>
-        </div>
-
-        <input type="submit" value="登録">
+        <input type="text" name="address" placeholder="住所を入力してください">
+        <button type="submit">検索</button>
     </form>
-</div>
+    <div class="messages">
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    <a href="{% url 'home' %}" class="btn-back">ホームに戻る</a>
+    <a href="{% url 'reception_home' %}" class="btn-back">受付ホーム</a>
+</main>
 </body>
 </html>
