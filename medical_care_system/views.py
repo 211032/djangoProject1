@@ -4,9 +4,9 @@ from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
-from medical_care_system.models import Employee, shiiregyousha, patient, medicine, Treatment
+from medical_care_system.models import Employee, shiiregyousha, patient, medicine, Treatment, Tabyouin
 from django.contrib.auth.decorators import login_required
-
+from django import forms
 
 
 
@@ -522,3 +522,38 @@ def treatment_history_results(request, patid):
 def tabyouin_home(request):
     return render(request, 'gamen/tabyouin/tabyouin_home.html')
 
+
+class TabyouinForm(forms.ModelForm):
+    class Meta:
+        model = Tabyouin
+        fields = ['tabyouinid', 'tabyouinmei', 'tabyouinaddress', 'tabyouintel', 'tabyouinshihonkin', 'kyukyu']
+        labels = {
+            'tabyouinid': '他病院ID',
+            'tabyouinmei': '他病院名',
+            'tabyouinaddress': '他病院住所',
+            'tabyouintel': '他病院電話番号',
+            'tabyouinshihonkin': '資本金',
+            'kyukyu': '救急対応',
+        }
+        widgets = {
+            'kyukyu': forms.Select(choices=[(1, '対応する'), (0, '対応しない')]),
+        }
+
+def tabyouin_registration(request):
+    if request.method == 'POST':
+        form = TabyouinForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '他病院が正常に登録されました。')
+            return redirect('tabyouin_list')
+        else:
+            messages.error(request, '登録にエラーが発生しました。再度入力してください。')
+    else:
+        form = TabyouinForm()
+    return render(request, 'gamen/tabyouin/tabyouin_registration.html', {'form': form})
+
+def tabyouin_list(request):
+    tabyouin_list = Tabyouin.objects.all()
+    if not tabyouin_list:
+        messages.error(request, "現在、登録されている他病院情報はありません。")
+    return render(request, 'gamen/tabyouin/tabyouin_list.html', {'tabyouin_list': tabyouin_list})

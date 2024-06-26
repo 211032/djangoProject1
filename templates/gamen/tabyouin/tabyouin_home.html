@@ -50,11 +50,9 @@
     <div class="menu-row">
         <a href="{% url 'login' %}" class="menu-button">ログアウト</a>
         {% csrf_token %}
-        <a href="{% url '#' %}" class="menu-button">他病院登録</a>
+        <a href="{% url 'tabyouin_registration' %}" class="menu-button">他病院登録</a>
         {% csrf_token %}
-
     </div>
 </div>
-
 </body>
 </html>

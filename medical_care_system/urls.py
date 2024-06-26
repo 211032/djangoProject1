@@ -2,7 +2,7 @@ from django.urls import path
 from .views import login, employee_registration, home, employee_update_form, employee_update, change_password, \
     shiire_home, shiire_registration, shiire_list, shiire_search, patient_registration, patient_insurance_change, \
     patient_search, patients, confirm_prescription, prescribe_medicine, doctor_home, prescription_list, \
-    treatment_history, treatment_history_results, reception_home, tabyouin_home
+    treatment_history, treatment_history_results, reception_home, tabyouin_home, tabyouin_registration, tabyouin_list
 
 urlpatterns = [
     path('', login, name='index'),
@@ -28,5 +28,8 @@ urlpatterns = [
     path('treatment_history/', treatment_history, name='treatment_history'),
     path('treatment_history_results/<str:patid>/', treatment_history_results, name='treatment_history_results'),
     path('tabyouin_home', tabyouin_home, name='tabyouin_home'),
+    path('tabyouin/register/', tabyouin_registration, name='tabyouin_registration'),
+    path('tabyouin/list/', tabyouin_list, name='tabyouin_list'),
+
 
 ]

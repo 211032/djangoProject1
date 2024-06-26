@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>他病院一覧</title>
+</head>
+<body>
+<h1>他病院一覧</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>名前</th>
+        <th>住所</th>
+        <th>電話番号</th>
+        <th>資本金</th>
+        <th>救急対応</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for tabyouin in tabyouin_list %}
+        <tr>
+            <td>{{ tabyouin.tabyouinid }}</td>
+            <td>{{ tabyouin.tabyouinmei }}</td>
+            <td>{{ tabyouin.tabyouinaddress }}</td>
+            <td>{{ tabyouin.tabyouintel }}</td>
+            <td>{{ tabyouin.tabyouinshihonkin }}</td>
+            <td>{{ tabyouin.kyukyu|yesno:"対応する,対応しない" }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
