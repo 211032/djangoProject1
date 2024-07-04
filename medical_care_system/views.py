@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login
 from medical_care_system.models import Employee, shiiregyousha, patient, medicine, Treatment, Tabyouin
 from django.contrib.auth.decorators import login_required
 from django import forms
+from django.core.exceptions import ValidationError
 
 
 
@@ -522,35 +523,65 @@ def treatment_history_results(request, patid):
 def tabyouin_home(request):
     return render(request, 'gamen/tabyouin/tabyouin_home.html')
 
-
-class TabyouinForm(forms.ModelForm):
-    class Meta:
-        model = Tabyouin
-        fields = ['tabyouinid', 'tabyouinmei', 'tabyouinaddress', 'tabyouintel', 'tabyouinshihonkin', 'kyukyu']
-        labels = {
-            'tabyouinid': '他病院ID',
-            'tabyouinmei': '他病院名',
-            'tabyouinaddress': '他病院住所',
-            'tabyouintel': '他病院電話番号',
-            'tabyouinshihonkin': '資本金',
-            'kyukyu': '救急対応',
-        }
-        widgets = {
-            'kyukyu': forms.Select(choices=[(1, '対応する'), (0, '対応しない')]),
-        }
-
 def tabyouin_registration(request):
     if request.method == 'POST':
-        form = TabyouinForm(request.POST)
-        if form.is_valid():
-            form.save()
+        tabyouinid = request.POST.get('tabyouinid')
+        tabyouinmei = request.POST.get('tabyouinmei')
+        tabyouinaddress = request.POST.get('tabyouinaddress')
+        tabyouintel = request.POST.get('tabyouintel')
+        tabyouinshihonkin = request.POST.get('tabyouinshihonkin')
+        kyukyu = request.POST.get('kyukyu')
+
+        # 入力データのバリデーション
+        errors = []
+        if not tabyouinid:
+            errors.append('他病院 ID を入力してください。')
+        if not tabyouinmei:
+            errors.append('他病院名 を入力してください。')
+        if not tabyouinaddress:
+            errors.append('他病院住所 を入力してください。')
+        if not tabyouintel:
+            errors.append('他病院電話番号 を入力してください。')
+        elif not re.match(r'^[0-9()\-]+$', tabyouintel):
+            errors.append('他病院電話番号 は数字、（）、- のみを含む必要があります。')
+        elif len(re.sub(r'[^0-9]', '', tabyouintel)) < 11:  # 電話番号の数字が11文字以上であることを確認
+            errors.append('他病院電話番号 は11文字以上でなければなりません。')
+        if not tabyouinshihonkin:
+            errors.append('資本金 を入力してください。')
+        elif not re.match(r'^[0-9,円]+$', tabyouinshihonkin):
+            errors.append('資本金 は数字、カンマ、円記号のみを含む必要があります。')
+        else:
+            tabyouinshihonkin = re.sub(r'[円,]', '', tabyouinshihonkin)  # 円記号とカンマを削除
+
+        if not kyukyu:
+            errors.append('救急対応を選択してください。')
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return render(request, 'gamen/tabyouin/tabyouin_registration.html')
+
+        if Tabyouin.objects.filter(tabyouinid=tabyouinid).exists():
+            messages.error(request, 'この他病院 ID は既に存在しています。')
+            return render(request, 'gamen/tabyouin/tabyouin_registration.html')
+
+        # 他病院の登録
+        try:
+            new_tabyouin = Tabyouin(
+                tabyouinid=tabyouinid,
+                tabyouinmei=tabyouinmei,
+                tabyouinaddress=tabyouinaddress,
+                tabyouintel=tabyouintel,
+                tabyouinshihonkin=int(tabyouinshihonkin),
+                kyukyu=int(kyukyu)
+            )
+            new_tabyouin.save()
             messages.success(request, '他病院が正常に登録されました。')
             return redirect('tabyouin_list')
-        else:
+        except Exception as e:
             messages.error(request, '登録にエラーが発生しました。再度入力してください。')
-    else:
-        form = TabyouinForm()
-    return render(request, 'gamen/tabyouin/tabyouin_registration.html', {'form': form})
+
+    return render(request, 'gamen/tabyouin/tabyouin_registration.html')
 
 def tabyouin_list(request):
     tabyouin_list = Tabyouin.objects.all()
