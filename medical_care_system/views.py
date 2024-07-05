@@ -601,3 +601,57 @@ def tabyouin_search(request):
                 messages.error(request, "該当する他病院が見つかりませんでした。")
 
     return render(request, 'gamen/tabyouin/tabyouin_search.html', {'tabyouin_list': tabyouin_list})
+
+def tabyouin_update(request):
+    tabyouin_list = Tabyouin.objects.all()
+
+    if request.method == 'POST':
+        tabyouinid = request.POST.get('tabyouinid', '').strip()
+        try:
+            tabyouin = Tabyouin.objects.get(tabyouinid=tabyouinid)
+            return render(request, 'gamen/tabyouin/tabyouin_update_form.html', {'tabyouin': tabyouin})
+        except Tabyouin.DoesNotExist:
+            messages.error(request, "指定された他病院IDは存在しません。")
+            return render(request, 'gamen/tabyouin/tabyouin_update_search.html', {'tabyouin_list': tabyouin_list})
+
+    return render(request, 'gamen/tabyouin/tabyouin_update_search.html', {'tabyouin_list': tabyouin_list})
+
+def tabyouin_update_confirm(request):
+    if request.method == 'POST':
+        tabyouinid = request.POST.get('tabyouinid')
+        tabyouintel = request.POST.get('tabyouintel')
+
+        errors = []
+
+        if not tabyouintel:
+            errors.append('他病院電話番号 を入力してください。')
+        elif not re.match(r'^[0-9()\-]+$', tabyouintel):
+            errors.append('他病院電話番号 は数字、（）、- のみを含む必要があります。')
+        elif len(re.sub(r'[^0-9]', '', tabyouintel)) < 11:
+            errors.append('他病院電話番号 は11文字以上でなければなりません。')
+
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return render(request, 'gamen/tabyouin/tabyouin_update_form.html', {'tabyouinid': tabyouinid, 'tabyouintel': tabyouintel})
+
+        return render(request, 'gamen/tabyouin/tabyouin_update_confirm.html', {'tabyouinid': tabyouinid, 'tabyouintel': tabyouintel})
+
+    return redirect('tabyouin_update_search')
+
+def tabyouin_update_save(request):
+    if request.method == 'POST':
+        tabyouinid = request.POST.get('tabyouinid')
+        tabyouintel = request.POST.get('tabyouintel')
+
+        try:
+            tabyouin = Tabyouin.objects.get(tabyouinid=tabyouinid)
+            tabyouin.tabyouintel = tabyouintel
+            tabyouin.save()
+            messages.success(request, '他病院情報が正常に更新されました。')
+            return redirect('tabyouin_list')
+        except Tabyouin.DoesNotExist:
+            messages.error(request, "指定された他病院IDは存在しません。")
+            return redirect('tabyouin_update_search')
+
+    return redirect('tabyouin_update_search')

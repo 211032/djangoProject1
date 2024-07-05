@@ -56,6 +56,8 @@
         {% csrf_token %}
         <a href="{% url 'tabyouin_search' %}" class="menu-button">他病院検索</a>
         {% csrf_token %}
+        <a href="{% url 'tabyouin_update_search' %}" class="menu-button">他病院情報変更</a>
+        {% csrf_token %}
     </div>
 </div>
 </body>
