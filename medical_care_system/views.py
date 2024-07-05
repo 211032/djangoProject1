@@ -588,3 +588,16 @@ def tabyouin_list(request):
     if not tabyouin_list:
         messages.error(request, "現在、登録されている他病院情報はありません。")
     return render(request, 'gamen/tabyouin/tabyouin_list.html', {'tabyouin_list': tabyouin_list})
+
+def tabyouin_search(request):
+    tabyouin_list = Tabyouin.objects.all()
+
+    if request.method == 'POST':
+        address = request.POST.get('address', '').strip()
+
+        if address:
+            tabyouin_list = Tabyouin.objects.filter(tabyouinaddress__icontains=address)
+            if not tabyouin_list.exists():
+                messages.error(request, "該当する他病院が見つかりませんでした。")
+
+    return render(request, 'gamen/tabyouin/tabyouin_search.html', {'tabyouin_list': tabyouin_list})
