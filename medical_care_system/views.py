@@ -9,15 +9,15 @@ from django.contrib.auth.decorators import login_required
 from django import forms
 from django.core.exceptions import ValidationError
 
-
-
 def login(request, error_meessage=None):
+    request.session.flush()
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         try:
             employee = Employee.objects.get(empid=username, emppasswd=password)
             request.session['empid'] = employee.empid  # ログイン成功時にempidをセッションに保存
+            request.session['emprole'] = employee.emprole
 
             if employee.emprole == 0:
                 return render(request, 'home.html')
@@ -26,20 +26,28 @@ def login(request, error_meessage=None):
             elif employee.emprole == 2:
                 return render(request, 'docdor_home.html')
         except Employee.DoesNotExist:
-            error_message = "ユーザが見つかりません"
+            print(error_meessage)
         return render(request, 'error.html',{'error_message': error_meessage})
 
     return render(request, 'login.html') #ログアウト画面
 
 def home(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     return render(request,'home.html')
 def shiire_home(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     return render(request,'gamen/shiiregyousha/shiire_home.html')
 def reception_home(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 1:
+        return redirect('login')
     return render(request,'reception_home.html')
 
 
 def employee_registration(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     # 従業員登録ページにリダイレクト
     if request.method == 'POST':
         empid = request.POST['empid']
@@ -72,6 +80,8 @@ def employee_registration(request):
     return render(request, 'gamen/employee/employee.html')
 
 def employee_update(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     if request.method == 'POST':
         empid = request.POST['empid']
 
@@ -85,6 +95,8 @@ def employee_update(request):
     return render(request, 'gamen/employee/employee_update_search.html')
 
 def employee_update_form(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     if request.method == 'POST':
         empid = request.POST['empid']
         first_name = request.POST.get('first_name', '').strip()
@@ -111,6 +123,8 @@ def employee_update_form(request):
 
 
 def change_password(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     # セッションからユーザー情報を取得
     empid = request.session.get('empid')
 
@@ -142,6 +156,8 @@ def change_password(request):
 import re
 
 def shiire_registration(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     if request.method == 'POST':
         shiireid = request.POST.get('shiireid')
         shiiremei = request.POST.get('shiiremei')
@@ -213,6 +229,8 @@ def shiire_registration(request):
 
 
 def shiire_list(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     shiiregyousha_list = shiiregyousha.objects.all()
 
     if not shiiregyousha_list:
@@ -222,6 +240,8 @@ def shiire_list(request):
 
 
 def shiire_search(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     if request.method == 'POST':
         address = request.POST.get('address')
 
@@ -238,6 +258,8 @@ def shiire_search(request):
 
 
 def patient_registration(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 1:
+        return redirect('login')
     if request.method == 'POST':
         patient_id = request.POST.get('patid')
         last_name = request.POST.get('patlname')
@@ -279,13 +301,9 @@ def patient_registration(request):
 
     return render(request, 'gamen/patient/patient_registration.html')
 
-
-
-
-
-
-
 def patient_insurance_change(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 1:
+        return redirect('login')
     empid = request.session.get('empid')
     current_user = get_object_or_404(Employee, empid=empid)
 
@@ -345,13 +363,9 @@ def patient_insurance_change(request):
 
     return render(request, 'gamen/patient/insurance_change.html')
 
-
-
-
-
-
-
 def patient_search(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 1:
+        return redirect('login')
     patients = None
     if request.method == 'POST':
         patfname = request.POST.get('patfname').strip()
@@ -383,9 +397,9 @@ def patient_search(request):
 
     return render(request, 'gamen/patient/patient_search.html', {'patients': patients})
 
-
-
 def patients(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 2:
+        return redirect('login')
     query = request.GET.get('q')
     error_message = None
     if query:
@@ -399,11 +413,15 @@ def patients(request):
 
 
 def doctor_home(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 2:
+        return redirect('login')
     return render(request, 'docdor_home.html')
 
 
 
 def prescribe_medicine(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 2:
+        return redirect('login')
     empid = request.session.get('empid')
     current_user = get_object_or_404(Employee, empid=empid)
 
@@ -443,6 +461,8 @@ def prescribe_medicine(request):
     return render(request, 'gamen/Treatment/prescribe_medicine.html', {'medicines': medicines})
 
 def prescription_list(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 2:
+        return redirect('login')
     if request.method == 'POST':
         action = request.POST.get('action')
         index = int(request.POST.get('index', -1))
@@ -464,6 +484,8 @@ def prescription_list(request):
     return render(request, 'gamen/Treatment/prescription_list.html', {'prescriptions': prescriptions})
 
 def confirm_prescription(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 2:
+        return redirect('login')
     prescriptions = request.session.get('prescriptions', [])
     if not prescriptions:
         messages.error(request, '処置情報がありません。')
@@ -490,6 +512,8 @@ def confirm_prescription(request):
 
 
 def treatment_history(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 2:
+        return redirect('login')
     empid = request.session.get('empid')
     current_user = get_object_or_404(Employee, empid=empid)
 
@@ -508,6 +532,8 @@ def treatment_history(request):
     return render(request, 'gamen/Treatment/treatment_history.html', {'treatments': treatments})
 
 def treatment_history_results(request, patid):
+    if 'empid' not in request.session or request.session.get('emprole') != 2:
+        return redirect('login')
     empid = request.session.get('empid')
     current_user = get_object_or_404(Employee, empid=empid)
 
@@ -524,6 +550,8 @@ def tabyouin_home(request):
     return render(request, 'gamen/tabyouin/tabyouin_home.html')
 
 def tabyouin_registration(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     if request.method == 'POST':
         tabyouinid = request.POST.get('tabyouinid')
         tabyouinmei = request.POST.get('tabyouinmei')
@@ -584,6 +612,8 @@ def tabyouin_registration(request):
     return render(request, 'gamen/tabyouin/tabyouin_registration.html')
 
 def tabyouin_list(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     tabyouin_list = Tabyouin.objects.all()
     if not tabyouin_list:
         messages.error(request, "現在、登録されている他病院情報はありません。")
@@ -603,6 +633,8 @@ def tabyouin_search(request):
     return render(request, 'gamen/tabyouin/tabyouin_search.html', {'tabyouin_list': tabyouin_list})
 
 def tabyouin_update(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     tabyouin_list = Tabyouin.objects.all()
 
     if request.method == 'POST':
@@ -617,6 +649,8 @@ def tabyouin_update(request):
     return render(request, 'gamen/tabyouin/tabyouin_update_search.html', {'tabyouin_list': tabyouin_list})
 
 def tabyouin_update_confirm(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     if request.method == 'POST':
         tabyouinid = request.POST.get('tabyouinid')
         tabyouintel = request.POST.get('tabyouintel')
@@ -640,6 +674,8 @@ def tabyouin_update_confirm(request):
     return redirect('tabyouin_update_search')
 
 def tabyouin_update_save(request):
+    if 'empid' not in request.session or request.session.get('emprole') != 0:
+        return redirect('login')
     if request.method == 'POST':
         tabyouinid = request.POST.get('tabyouinid')
         tabyouintel = request.POST.get('tabyouintel')
@@ -655,3 +691,4 @@ def tabyouin_update_save(request):
             return redirect('tabyouin_update_search')
 
     return redirect('tabyouin_update_search')
+
