@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
@@ -691,4 +690,29 @@ def tabyouin_update_save(request):
             return redirect('tabyouin_update_search')
 
     return redirect('tabyouin_update_search')
+
+def kanja_login(request):
+    if request.method == "POST":
+        patid = request.POST.get("patid")
+        hokenmei = request.POST.get("hokenmei")
+
+        if patid and hokenmei:
+            try:
+                user = patient.objects.get(patid=patid)
+                if user.hokenmei == hokenmei:
+                    login(request, user)  # Djangoの認証システムでログイン
+                    return redirect("menu")  # ログイン後のリダイレクト先
+                else:
+                    error_message = "保険証名記号番号が正しくありません"
+            except patient.DoesNotExist:
+                error_message = "患者IDが存在しません"
+        else:
+            error_message = "全てのフィールドを入力してください"
+    else:
+        error_message = None
+
+    return render(request, "kanja_login.html", {"error_message": error_message})
+
+
+
 

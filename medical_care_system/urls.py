@@ -3,7 +3,7 @@ from .views import login, employee_registration, home, employee_update_form, emp
     shiire_home, shiire_registration, shiire_list, shiire_search, patient_registration, patient_insurance_change, \
     patient_search, patients, confirm_prescription, prescribe_medicine, doctor_home, prescription_list, \
     treatment_history, treatment_history_results, reception_home, tabyouin_home, tabyouin_registration, tabyouin_list, \
-    tabyouin_search, tabyouin_update, tabyouin_update_confirm, tabyouin_update_save
+    tabyouin_search, tabyouin_update, tabyouin_update_confirm, tabyouin_update_save, kanja_login
 
 urlpatterns = [
     path('', login, name='index'),
@@ -32,10 +32,9 @@ urlpatterns = [
     path('tabyouin/register/', tabyouin_registration, name='tabyouin_registration'),
     path('tabyouin/list/', tabyouin_list, name='tabyouin_list'),
     path('tabyouin/search/', tabyouin_search, name='tabyouin_search'),
-
     path('tabyouin/update/search/', tabyouin_update, name='tabyouin_update_search'),
     path('tabyouin/update/confirm/', tabyouin_update_confirm, name='tabyouin_update_confirm'),
     path('tabyouin/update/save/', tabyouin_update_save, name='tabyouin_update_save'),
-
+    path('kanja_login/', kanja_login, name='kanja_login'),
 
 ]
