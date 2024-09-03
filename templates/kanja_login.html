@@ -57,7 +57,7 @@
 <body>
 <div class="login-container">
     <h2>患者ログイン</h2>
-    <form method="POST">
+    <form action="{% url 'kanja_login' %}" method="POST">
         {% csrf_token %}
         <label for="patid">患者ID:</label>
         <input type="text" id="patid" name="patid" required>

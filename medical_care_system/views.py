@@ -691,28 +691,31 @@ def tabyouin_update_save(request):
 
     return redirect('tabyouin_update_search')
 
+def kanja_home(request):
+    return render(request, 'gamen/kanja/kanja_home.html')
+
+
 def kanja_login(request):
+    error_message = None  # error_messageを初期化
+
     if request.method == "POST":
         patid = request.POST.get("patid")
         hokenmei = request.POST.get("hokenmei")
 
         if patid and hokenmei:
             try:
+                # `patid` で患者を取得
                 user = patient.objects.get(patid=patid)
+                # `hokenmei` が一致するか確認
                 if user.hokenmei == hokenmei:
-                    login(request, user)  # Djangoの認証システムでログイン
-                    return redirect("menu")  # ログイン後のリダイレクト先
+                    return redirect("kanja_home")  # メニュー画面へリダイレクト
                 else:
                     error_message = "保険証名記号番号が正しくありません"
             except patient.DoesNotExist:
                 error_message = "患者IDが存在しません"
         else:
             error_message = "全てのフィールドを入力してください"
-    else:
-        error_message = None
 
     return render(request, "kanja_login.html", {"error_message": error_message})
-
-
 
 
