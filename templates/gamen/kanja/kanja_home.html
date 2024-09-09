@@ -52,7 +52,10 @@
     <div class="menu-row">
         <a href="{% url 'kanja_login' %}" class="menu-button">ログアウト</a>
         {% csrf_token %}
-
+        <a href="{% url 'kanjahukuyou_list' %}" class="menu-button">お薬確認</a>
+        {% csrf_token %}
+        <a href="{% url 'kanjahukuyou' %}" class="menu-button">服用確認</a>
+        {% csrf_token %}
     </div>
 </div>
 

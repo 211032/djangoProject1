@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服用履歴</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #343a40;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        td {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        form {
+            display: inline-block;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        p {
+            text-align: center;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>処方履歴と服用</h2>
+
+    {% if treatments %}
+        <table>
+            <thead>
+            <tr>
+                <th>薬剤ID</th>
+                <th>薬剤名</th>
+                <th>残りの処方量</th>
+                <th>服用日時</th>
+                <th>服用量選択</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for treatment in treatments %}
+                <tr>
+                    <td>{{ treatment.medicineid }}</td>
+                    <td>{{ treatment.medicinename }}</td>
+                    <td>{{ treatment.dosage }}</td>
+                    <td>{% if treatment.taken_at %}{{ treatment.taken_at }}{% else %}未服用{% endif %}</td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="treatment_id" value="{{ treatment.treatment_id }}">
+                            <input type="number" name="taken_dosage" min="1" max="{{ treatment.dosage }}" required>
+                            <button type="submit">服用</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>処方履歴がありません。</p>
+    {% endif %}
+</div>
+</body>
+</html>

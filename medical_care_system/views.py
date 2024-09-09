@@ -696,7 +696,7 @@ def kanja_home(request):
 
 
 def kanja_login(request):
-    error_message = None  # error_messageを初期化
+    error_message = None  # エラーメッセージの初期化
 
     if request.method == "POST":
         patid = request.POST.get("patid")
@@ -708,6 +708,8 @@ def kanja_login(request):
                 user = patient.objects.get(patid=patid)
                 # `hokenmei` が一致するか確認
                 if user.hokenmei == hokenmei:
+                    # ログイン成功時に patid をセッションに保存
+                    request.session['patid'] = user.patid
                     return redirect("kanja_home")  # メニュー画面へリダイレクト
                 else:
                     error_message = "保険証名記号番号が正しくありません"
@@ -719,3 +721,89 @@ def kanja_login(request):
     return render(request, "kanja_login.html", {"error_message": error_message})
 
 
+def kanjahukuyou_list(request):
+    # セッションから患者IDを取得します
+    patid = request.session.get('patid')
+
+    # 患者IDがセッションに存在しない場合、ログイン画面にリダイレクトします
+    if not patid:
+        messages.error(request, "患者IDが見つかりません。ログインし直してください。")
+        return redirect('kanja_login')
+
+    # 患者のインスタンスを取得します
+    patient_instance = get_object_or_404(patient, patid=patid)
+
+    # ログインしている患者の治療履歴を取得します
+    treatments = Treatment.objects.filter(patid=patient_instance).select_related('medicineid')
+
+    # 治療履歴が存在しない場合、メッセージを表示して画面に戻します
+    if not treatments.exists():
+        messages.info(request, "該当患者に処方履歴がありません。")
+        return render(request, 'gamen/kanja/kanjahukuyou_list.html', {'treatments': None})
+
+    # 各治療データに対して、薬剤ID、薬剤名、投与量をリストにまとめます
+    treatment_data = []
+    for treatment in treatments:
+        treatment_data.append({
+            'medicineid': treatment.medicineid.medicineid,
+            'medicinename': treatment.medicineid.medicinename,
+            'dosage': treatment.dosage,
+        })
+
+    # テンプレートに治療データを渡して表示します
+    return render(request, 'gamen/kanja/kanjahukuyou_list.html', {'treatments': treatment_data})
+
+
+
+
+def kanjahukuyou(request):
+    # セッションから患者IDを取得
+    patid = request.session.get('patid')
+
+    # 患者IDがセッションにない場合、ログイン画面へリダイレクト
+    if not patid:
+        messages.error(request, "患者IDが見つかりません。ログインし直してください。")
+        return redirect('kanja_login')
+
+    # 患者のインスタンスを取得
+    patient_instance = get_object_or_404(patient, patid=patid)
+
+    # 患者の治療履歴（処方）を取得
+    treatments = Treatment.objects.filter(patid=patient_instance).select_related('medicineid')
+
+    # 治療履歴がない場合の処理
+    if not treatments.exists():
+        messages.info(request, "該当患者に処方履歴がありません。")
+        return render(request, 'gamen/kanja/kanjahukuyou.html', {'treatments': None})
+
+    # POSTリクエストが送られた場合の処理（服用処理）
+    if request.method == 'POST':
+        # POSTから治療IDと服用量を取得
+        treatment_id = request.POST.get('treatment_id')
+        taken_dosage = int(request.POST.get('taken_dosage'))
+
+        # 指定された治療を取得
+        treatment = get_object_or_404(Treatment, treatment_id=treatment_id, patid=patient_instance)
+
+        # 服用量が残りの処方量を超えないかチェックし、処理
+        if treatment.dosage >= taken_dosage:
+            treatment.dosage -= taken_dosage  # 処方量から服用量を減算
+            treatment.taken_at = datetime.now()  # 服用日時を更新
+            treatment.save()
+            messages.success(request, f'{treatment.medicineid.medicinename} を {taken_dosage} 服用しました。')
+        else:
+            messages.error(request, '服用量が処方量を超えています。')
+
+    # テンプレートに渡す治療データを準備
+    treatment_data = []
+    for treatment in treatments:
+        treatment_data.append({
+            'treatment_id': treatment.treatment_id,  # 修正：正しいIDフィールドを使う
+            'medicineid': treatment.medicineid.medicineid,
+            'medicinename': treatment.medicineid.medicinename,
+            'dosage': treatment.dosage,
+            'taken_at': treatment.taken_at,
+        })
+
+    # テンプレートに治療データを渡して表示
+    return render(request, 'gamen/kanja/kanjahukuyou.html', {'treatments': treatment_data})

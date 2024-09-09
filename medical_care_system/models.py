@@ -36,6 +36,9 @@ class Treatment(models.Model):
     dosage = models.IntegerField()
     status = models.CharField(max_length=10, default='pending')  # 'pending' or 'confirmed'
 
+    taken_at = models.DateTimeField(null=True, blank=True)  # 服用日時の記録
+    remaining_dosage = models.IntegerField(default=0)  # 残りの薬の量
+
 class Tabyouin(models.Model):
     tabyouinid = models.CharField(max_length=8, primary_key=True, )
     tabyouinmei = models.CharField(max_length=64)
