@@ -308,25 +308,25 @@ def patient_insurance_change(request):
 
     if request.method == 'POST':
         patid = request.POST.get('patid')
-        patlname = request.POST.get('patlname')
-        patfname = request.POST.get('patfname')
+        patlname = request.POST.get('patfname')
+        patfname = request.POST.get('patlname')
         hokenmei = request.POST.get('hokenmei')
         hokenexp = request.POST.get('hokenexp')
 
-        # Validate input
+        # 入力値の検証
         errors = []
         if not patid:
             errors.append('患者IDを入力してください。')
         if not patfname:
-            errors.append('姓を入力してください。')
-        if not patlname:
             errors.append('名を入力してください。')
+        if not patlname:
+            errors.append('姓を入力してください。')
         if not hokenmei and not hokenexp:
             errors.append('保険証記号番号または有効期限を入力してください。')
         if hokenmei and len(re.sub(r'[^0-9]', '', hokenmei)) != 10:  # 保険証番号が10桁であることを確認
             errors.append('保険証記号番号は10桁の数字でなければなりません。')
 
-        # Check if the patient exists in the database
+        # 患者がデータベースに存在するか確認
         try:
             patient_instance = patient.objects.get(patid=patid)
         except patient.DoesNotExist:
@@ -336,7 +336,7 @@ def patient_insurance_change(request):
         if patient_instance:
             current_hokenexp = patient_instance.hokenexp
 
-            # Check if the new expiration date is older or the same as the current expiration date
+            # 新しい有効期限が現在の有効期限より古いか同じ場合を確認
             if hokenexp:
                 try:
                     new_hokenexp_date = datetime.strptime(hokenexp, '%Y-%m-%d').date()
@@ -351,13 +351,18 @@ def patient_insurance_change(request):
             return render(request, 'gamen/patient/insurance_change.html')
 
         if patient_instance:
+            # 患者情報の更新
+            if patfname:
+                patient_instance.patfname = patfname
+            if patlname:
+                patient_instance.patlname = patlname
             if hokenmei:
                 patient_instance.hokenmei = hokenmei
             if hokenexp:
                 patient_instance.hokenexp = hokenexp
             patient_instance.save()
 
-            messages.success(request, '保険証情報が正常に変更されました。')
+            messages.success(request, '患者情報が正常に変更されました。')
             return redirect('patient_insurance_change')
 
     return render(request, 'gamen/patient/insurance_change.html')
@@ -530,6 +535,11 @@ def treatment_history(request):
 
     return render(request, 'gamen/Treatment/treatment_history.html', {'treatments': treatments})
 
+
+
+
+
+
 def treatment_history_results(request, patid):
     if 'empid' not in request.session or request.session.get('emprole') != 2:
         return redirect('login')
@@ -543,7 +553,6 @@ def treatment_history_results(request, patid):
         messages.info(request, "該当患者に処置履歴がありません。")
 
     return render(request, 'gamen/Treatment/treatment_history_results.html', {'patient': patient_instance, 'treatments': treatments})
-
 
 def tabyouin_home(request):
     return render(request, 'gamen/tabyouin/tabyouin_home.html')

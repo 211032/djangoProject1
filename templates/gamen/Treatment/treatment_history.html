@@ -30,40 +30,11 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        .search-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .search-container form {
-            display: inline-block;
-        }
-        .search-container input[type="text"] {
-            padding: 8px;
-            font-size: 16px;
+        .table-container {
             border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-right: 8px;
-        }
-        .search-container input[type="submit"] {
-            padding: 8px 16px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .search-container input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-        .message {
-            color: red;
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid red;
-            background-color: #ffe6e6;
-            border-radius: 4px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         table {
             width: 100%;
@@ -84,12 +55,6 @@
         tr:hover {
             background-color: #f1f1f1;
         }
-        .table-container {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
         footer {
             text-align: center;
             padding: 10px;
@@ -107,20 +72,6 @@
     <h1>処置履歴</h1>
 </header>
 <main>
-    <div class="search-container">
-        <form method="post" action="">
-            {% csrf_token %}
-            <input type="text" name="patid" placeholder="患者IDを入力">
-            <input type="submit" value="検索">
-        </form>
-    </div>
-    {% if messages %}
-        <div class="message">
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
     <div class="table-container">
         <table>
             <thead>
@@ -129,7 +80,9 @@
                 <th>従業員ID</th>
                 <th>患者ID</th>
                 <th>薬品ID</th>
-                <th>投与量</th>
+                <th>薬剤名</th> <!-- 薬剤名を追加 -->
+                <th>残りの処方量</th> <!-- 残りの処方量を追加 -->
+                <th>服用日時</th> <!-- 服用日時を追加 -->
             </tr>
             </thead>
             <tbody>
@@ -139,7 +92,9 @@
                     <td>{{ treatment.empid.empid }}</td>
                     <td>{{ treatment.patid.patid }}</td>
                     <td>{{ treatment.medicineid.medicineid }}</td>
-                    <td>{{ treatment.dosage }}</td>
+                    <td>{{ treatment.medicineid.medicinename }}</td> <!-- 薬剤名の表示 -->
+                    <td>{{ treatment.dosage }}</td> <!-- 残りの処方量の表示 -->
+                    <td>{% if treatment.taken_at %}{{ treatment.taken_at }}{% else %}未服用{% endif %}</td> <!-- 服用日時の表示 -->
                 </tr>
             {% endfor %}
             </tbody>

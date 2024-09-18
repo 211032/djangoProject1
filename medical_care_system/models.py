@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Employee(models.Model):
     empid = models.CharField(max_length=8, primary_key=True)
     empfname = models.CharField(max_length=64)
