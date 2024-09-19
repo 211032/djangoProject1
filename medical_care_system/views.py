@@ -795,22 +795,23 @@ def kanjahukuyou(request):
         treatment = get_object_or_404(Treatment, treatment_id=treatment_id, patid=patient_instance)
 
         # 服用量が残りの処方量を超えないかチェックし、処理
-        if treatment.dosage >= taken_dosage:
-            treatment.dosage -= taken_dosage  # 処方量から服用量を減算
+        if treatment.remaining_dosage >= taken_dosage:
+            treatment.remaining_dosage -= taken_dosage  # 残り服用量から減算
             treatment.taken_at = datetime.now()  # 服用日時を更新
             treatment.save()
             messages.success(request, f'{treatment.medicineid.medicinename} を {taken_dosage} 服用しました。')
         else:
-            messages.error(request, '服用量が処方量を超えています。')
+            messages.error(request, '服用量が残りの服用可能量を超えています。')
 
     # テンプレートに渡す治療データを準備
     treatment_data = []
     for treatment in treatments:
         treatment_data.append({
-            'treatment_id': treatment.treatment_id,  # 修正：正しいIDフィールドを使う
+            'treatment_id': treatment.treatment_id,
             'medicineid': treatment.medicineid.medicineid,
             'medicinename': treatment.medicineid.medicinename,
-            'dosage': treatment.dosage,
+            'dosage': treatment.dosage,  # 処方量は表示のみで変更不可
+            'remaining_dosage': treatment.remaining_dosage,  # 残り服用量
             'taken_at': treatment.taken_at,
         })
 
