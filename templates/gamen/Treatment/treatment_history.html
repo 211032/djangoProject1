@@ -55,6 +55,21 @@
         tr:hover {
             background-color: #f1f1f1;
         }
+        .back-button {
+            display: block;
+            width: fit-content;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .back-button:hover {
+            background-color: #45a049;
+        }
         footer {
             text-align: center;
             padding: 10px;
@@ -80,9 +95,10 @@
                 <th>従業員ID</th>
                 <th>患者ID</th>
                 <th>薬品ID</th>
-                <th>薬剤名</th> <!-- 薬剤名を追加 -->
-                <th>残りの処方量</th> <!-- 残りの処方量を追加 -->
-                <th>服用日時</th> <!-- 服用日時を追加 -->
+                <th>薬剤名</th>
+                <th>処方量</th>
+                <th>服用量</th>
+                <th>服用日時</th>
             </tr>
             </thead>
             <tbody>
@@ -92,14 +108,18 @@
                     <td>{{ treatment.empid.empid }}</td>
                     <td>{{ treatment.patid.patid }}</td>
                     <td>{{ treatment.medicineid.medicineid }}</td>
-                    <td>{{ treatment.medicineid.medicinename }}</td> <!-- 薬剤名の表示 -->
-                    <td>{{ treatment.dosage }}</td> <!-- 残りの処方量の表示 -->
-                    <td>{% if treatment.taken_at %}{{ treatment.taken_at }}{% else %}未服用{% endif %}</td> <!-- 服用日時の表示 -->
+                    <td>{{ treatment.medicineid.medicinename }}</td>
+                    <td>{{ treatment.dosage }}</td>
+                    <td>{{ treatment.hukuyou_dosage }}</td>
+                    <td>{% if treatment.taken_at %}{{ treatment.taken_at }}{% else %}未服用{% endif %}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+
+    <!-- ホーム画面に戻るボタン -->
+    <a href="{% url 'doctor_home' %}" class="back-button">ホーム画面に戻る</a>
 </main>
 <footer>
     <p>&copy; 2024 Your Clinic</p>
