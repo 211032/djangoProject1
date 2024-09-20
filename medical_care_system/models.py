@@ -34,10 +34,9 @@ class Treatment(models.Model):
     medicineid = models.ForeignKey('medicine', on_delete=models.CASCADE)
     dosage = models.IntegerField()
     status = models.CharField(max_length=10, default='pending')  # 'pending' or 'confirmed'
-
     taken_at = models.DateTimeField(null=True, blank=True)  # 服用日時の記録
     remaining_dosage = models.IntegerField(default=0)  # 残りの薬の量
-    hukuyou_dosage = models.IntegerField() # 服用した薬の量
+    hukuyou_dosage = models.IntegerField(default=0) # 服用した薬の量
 
 class Tabyouin(models.Model):
     tabyouinid = models.CharField(max_length=8, primary_key=True, )

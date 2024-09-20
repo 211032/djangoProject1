@@ -763,8 +763,6 @@ def kanjahukuyou_list(request):
     return render(request, 'gamen/kanja/kanjahukuyou_list.html', {'treatments': treatment_data})
 
 
-
-
 def kanjahukuyou(request):
     # セッションから患者IDを取得
     patid = request.session.get('patid')
@@ -794,14 +792,12 @@ def kanjahukuyou(request):
         # 指定された治療を取得
         treatment = get_object_or_404(Treatment, treatment_id=treatment_id, patid=patient_instance)
 
-        # 服用量が残りの処方量を超えないかチェックし、処理
-        if treatment.remaining_dosage >= taken_dosage:
-            treatment.remaining_dosage -= taken_dosage  # 残り服用量から減算
-            treatment.taken_at = datetime.now()  # 服用日時を更新
-            treatment.save()
-            messages.success(request, f'{treatment.medicineid.medicinename} を {taken_dosage} 服用しました。')
-        else:
-            messages.error(request, '服用量が残りの服用可能量を超えています。')
+        # `hukuyou_dosage` フィールドに服用量を加算する処理
+        treatment.hukuyou_dosage += taken_dosage  # 患者が服用した量を加算
+        treatment.taken_at = datetime.now()  # 服用日時を更新
+        treatment.save()
+
+        messages.success(request, f'{treatment.medicineid.medicinename} を {taken_dosage} 服用しました。')
 
     # テンプレートに渡す治療データを準備
     treatment_data = []
@@ -810,8 +806,8 @@ def kanjahukuyou(request):
             'treatment_id': treatment.treatment_id,
             'medicineid': treatment.medicineid.medicineid,
             'medicinename': treatment.medicineid.medicinename,
-            'dosage': treatment.dosage,  # 処方量は表示のみで変更不可
-            'remaining_dosage': treatment.remaining_dosage,  # 残り服用量
+            'dosage': treatment.dosage,  # 医師が処方した量
+            'hukuyou_dosage': treatment.hukuyou_dosage,  # 患者が実際に服用した量
             'taken_at': treatment.taken_at,
         })
 

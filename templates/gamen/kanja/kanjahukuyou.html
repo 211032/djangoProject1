@@ -3,205 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>服用履歴と服用</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <title>服用履歴</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        main {
+            width: 80%;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             text-align: center;
-            margin-top: 20px;
-            color: #333;
+            margin-bottom: 20px;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
         }
 
-        /* メッセージのスタイル */
-        .message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
-        .message.success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .message.info {
-            background-color: #cce5ff;
-            color: #004085;
-        }
-
-        /* テーブルのスタイル */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         th, td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #ddd;
         }
 
         th {
-            background-color: #f2f2f2;
-            color: #333;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
 
         tr:hover {
             background-color: #f1f1f1;
         }
 
-        td {
-            vertical-align: middle;
-        }
-
-        .form-inline {
-            display: flex;
-            align-items: center;
-        }
-
-        .form-inline input[type="number"] {
+        .dosage-input {
             width: 60px;
             padding: 5px;
-            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
-        button {
+        .submit-btn {
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+            padding: 8px 16px;
+            border-radius: 4px;
             cursor: pointer;
         }
 
-        button:hover {
+        .submit-btn:hover {
             background-color: #45a049;
         }
 
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
+        .message {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #4CAF50;
             color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        a:hover {
-            background-color: #0056b3;
-        }
-
-        /* モバイル対応 */
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-
-            table {
-                font-size: 14px;
-            }
-
-            button, a {
-                width: 100%;
-                text-align: center;
-            }
-
-            .form-inline {
-                flex-direction: column;
-            }
-
-            .form-inline input[type="number"] {
-                margin: 0 0 10px 0;
-            }
+            position: relative;
+            width: 100%;
+            bottom: 0;
         }
     </style>
 </head>
 <body>
-
-<h1>服用履歴と服用</h1>
-
-<div class="container">
-    <!-- エラーメッセージや成功メッセージの表示 -->
+<header>
+    <h1>服用履歴</h1>
+</header>
+<main>
     {% if messages %}
-        <ul>
+        <div class="message {% if messages.success %}success{% else %}error{% endif %}">
             {% for message in messages %}
-                <li class="message {{ message.tags }}">{{ message }}</li>
+                <p>{{ message }}</p>
             {% endfor %}
-        </ul>
+        </div>
     {% endif %}
 
-    <!-- 処方された薬の一覧を表示 -->
-    <table>
-        <thead>
-        <tr>
-            <th>薬剤名</th>
-            <th>処方量</th>
-            <th>服用量</th>
-            <th>服用日時</th>
-            <th>服用操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% if treatments %}
-            <!-- 各治療履歴を1行ずつ表示 -->
-            {% for treatment in treatments %}
+    <div class="table-container">
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ treatment.medicinename }}</td>
-                    <td>{{ treatment.dosage }}</td> <!-- 処方量は固定表示 -->
-                    <td>{{ treatment.remaining_dosage }}</td> <!-- 残り服用可能量 -->
-                    <td>
-                        {% if treatment.taken_at %}
-                            {{ treatment.taken_at|date:"Y年m月d日 H:i" }}
-                        {% else %}
-                            未服用
-                        {% endif %}
-                    </td>
-                    <td>
-                        <!-- 服用フォーム -->
-                        <form method="post" class="form-inline">
-                            {% csrf_token %}
-                            <input type="hidden" name="treatment_id" value="{{ treatment.treatment_id }}">
-                            <input type="number" name="taken_dosage" min="1" max="{{ treatment.remaining_dosage }}" placeholder="服用量" required>
-                            <button type="submit">服用する</button>
-                        </form>
-                    </td>
+                    <th>治療ID</th>
+                    <th>薬剤名</th>
+                    <th>処方量</th>
+                    <th>服用量</th>
+                    <th>服用日時</th>
+                    <th>服用</th>
                 </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5">処方履歴がありません。</td>
-            </tr>
-        {% endif %}
-        </tbody>
-    </table>
-
-    <a href="{% url 'kanjahukuyou' %}">ホームに戻る</a>
-</div>
-
+            </thead>
+            <tbody>
+                {% for treatment in treatments %}
+                    <tr>
+                        <td>{{ treatment.treatment_id }}</td>
+                        <td>{{ treatment.medicinename }}</td>
+                        <td>{{ treatment.dosage }}</td>
+                        <td>{{ treatment.hukuyou_dosage }}</td>
+                        <td>{% if treatment.taken_at %}{{ treatment.taken_at }}{% else %}未服用{% endif %}</td>
+                        <td>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="treatment_id" value="{{ treatment.treatment_id }}">
+                                <input type="number" name="taken_dosage" min="1" max="{{ treatment.dosage }}" class="dosage-input" required>
+                                <button type="submit" class="submit-btn">服用</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+<footer>
+    <p>&copy; 2024 Your Clinic</p>
+</footer>
 </body>
 </html>
